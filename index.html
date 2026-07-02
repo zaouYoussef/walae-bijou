@@ -1,0 +1,2175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wala'e Jewelry — Vente et Achat d'Or</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=Jost:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0906;
+    --panel:#131009;
+    --panel-2:#1a1610;
+    --hairline:#3a3020;
+    --gold-deep:#8a6f3f;
+    --gold:#c9a15c;
+    --gold-bright:#f3dc9a;
+    --ivory:#f4eee0;
+    --ivory-dim:#c9c0ab;
+    --garnet:#7c2230;
+    --garnet-bright:#a53344;
+    --radius:2px;
+    --display:'Cormorant Garamond', serif;
+    --body:'Jost', sans-serif;
+    --mono:'Space Mono', monospace;
+    --header-bg:rgba(10,9,6,.86);
+    --overlay-bg:rgba(0,0,0,.55);
+    --badge-bg:rgba(10,9,6,.7);
+    --filter-btn-bg:transparent;
+    --form-input-bg:rgba(255,255,255,.03);
+    --select-bg:var(--panel);
+    --insta-hover:rgba(10,9,6,.4);
+    --panel-glass:rgba(19,16,9,0.78);
+    --border-glass:rgba(201,161,92,0.2);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--ivory);
+    font-family:var(--body);
+    font-weight:300;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none;}
+  img,svg{display:block;max-width:100%;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+  ::selection{background:var(--gold);color:var(--ink);}
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:.68rem;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+
+  /* ===== 3D BACKGROUND RINGS ===== */
+  #bg3d-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;}
+
+  /* ===== SPARKLE CURSOR ===== */
+  #sparkle-canvas{position:fixed;inset:0;pointer-events:none;z-index:999;}
+
+  /* ===== GRAIN ===== */
+  .grain{
+    position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.03;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ===== AMBIENT FLOATING GOLD ===== */
+  #ambient-canvas{position:fixed;inset:0;pointer-events:none;z-index:1;}
+
+  /* ===== NAV ===== */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px clamp(20px,5vw,64px);
+    transition:background .4s ease, padding .4s ease, border-color .4s ease;
+    border-bottom:1px solid transparent;
+  }
+  header.scrolled{
+    background:var(--header-bg);
+    backdrop-filter:blur(10px);
+    padding:14px clamp(20px,5vw,64px);
+    border-color:var(--hairline);
+  }
+  .logo{display:flex;align-items:center;gap:14px;perspective:400px;}
+  .logo-img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid var(--gold-deep);transition:transform .4s, border-color .4s;}
+  .logo:hover .logo-img{transform:rotateX(8deg) rotateY(-8deg) translateZ(10px);border-color:var(--gold);}
+  .logo-text{display:flex;flex-direction:column;line-height:1;}
+  .logo-text .name{
+    font-family:var(--display);
+    font-size:1.7rem;
+    letter-spacing:.14em;
+    color:var(--gold-bright);
+    font-weight:600;
+    transition:transform .3s ease;
+    display:inline-block;
+  }
+  .logo:hover .name{transform:rotateX(8deg) rotateY(-8deg) translateZ(10px);}
+  .logo-text .sub{
+    font-family:var(--mono);
+    font-size:.55rem;
+    letter-spacing:.32em;
+    color:var(--ivory-dim);
+    margin-top:3px;
+    text-transform:uppercase;
+  }
+  nav.links{display:flex;gap:38px;}
+  nav.links a{
+    font-size:.82rem;letter-spacing:.06em;color:var(--ivory-dim);
+    position:relative;padding-bottom:3px;transition:color .3s;
+  }
+  nav.links a::after{
+    content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--gold);
+    transition:width .35s ease;
+  }
+  nav.links a:hover{color:var(--ivory);}
+  nav.links a:hover::after{width:100%;}
+  .header-actions{display:flex;align-items:center;gap:18px;}
+  .icon-btn{position:relative;width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:var(--ivory);}
+  .icon-btn svg{width:19px;height:19px;stroke:currentColor;}
+  .cart-count{
+    position:absolute;top:-2px;right:-2px;
+    background:var(--garnet-bright);color:var(--ivory);
+    font-family:var(--mono);font-size:.6rem;
+    width:16px;height:16px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    transform:scale(0);transition:transform .25s ease;
+  }
+  .cart-count.show{transform:scale(1);}
+  .wa-pill{
+    display:flex;align-items:center;gap:8px;
+    border:1px solid var(--gold-deep);
+    padding:9px 18px;border-radius:100px;
+    font-size:.78rem;letter-spacing:.03em;
+    transition:border-color .3s, background .3s, box-shadow .3s;
+  }
+  .wa-pill:hover{border-color:var(--gold);background:rgba(201,161,92,.08);box-shadow:0 0 20px rgba(201,161,92,.15);}
+  .wa-pill svg{width:14px;height:14px;stroke:var(--gold-bright);}
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative;min-height:100svh;display:flex;align-items:center;
+    padding:120px clamp(20px,5vw,64px) 80px;
+    overflow:hidden;
+  }
+  .hero-bg{
+    position:absolute;inset:0;z-index:0;
+  }
+  .hero-bg img{
+    width:100%;height:100%;object-fit:cover;
+    transform:scale(1.08);
+    transition:transform .1s linear;
+  }
+  .hero-bg .overlay{
+    position:absolute;inset:0;
+    background:
+      linear-gradient(to bottom, rgba(10,9,6,.7) 0%, rgba(10,9,6,.45) 50%, rgba(10,9,6,.85) 100%),
+      radial-gradient(ellipse 70% 60% at 50% 40%, rgba(201,161,92,.12), transparent 70%);
+  }
+  .hero-bg .glow{
+    position:absolute;top:-20%;left:-10%;width:120%;height:80%;
+    background:radial-gradient(ellipse 50% 50% at 50% 50%, rgba(201,161,92,.08), transparent 70%);
+    animation:pulseGlow 5s ease-in-out infinite;
+  }
+  @keyframes pulseGlow{0%,100%{opacity:.6;}50%{opacity:1;}}
+  .hero-grid{
+    display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;
+    width:100%;max-width:1320px;margin:0 auto;position:relative;z-index:2;
+  }
+  .hero h1{
+    font-family:var(--display);
+    font-weight:600;
+    font-size:clamp(2.6rem,6vw,5rem);
+    line-height:1.02;
+    letter-spacing:-.01em;
+    margin:18px 0 24px;
+  }
+  .hero h1 .line{display:block;overflow:hidden;}
+  .hero h1 .line span{display:block;animation:revealLine 1.2s cubic-bezier(.2,.7,.3,1) forwards;transform:translateY(100%);opacity:0;}
+  .hero h1 .line:nth-child(2) span{animation-delay:.15s;}
+  @keyframes revealLine{to{transform:translateY(0);opacity:1;}}
+  .hero h1 .gold-text{
+    background:linear-gradient(100deg, var(--gold-deep) 0%, var(--gold-bright) 30%, var(--gold) 45%, var(--gold-bright) 60%, var(--gold-deep) 100%);
+    background-size:250% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:shimmer 5s linear infinite;
+    text-shadow:0 2px 20px rgba(0,0,0,.85), 0 0 60px rgba(0,0,0,.5);
+  }
+  .hero h1 .line span{text-shadow:0 2px 16px rgba(0,0,0,.6);}
+  @keyframes shimmer{
+    0%{background-position:200% 0;}
+    100%{background-position:-50% 0;}
+  }
+  .hero p.lede{
+    font-size:1.08rem;color:var(--ivory-dim);max-width:480px;line-height:1.7;
+    font-weight:300;
+    opacity:0;transform:translateY(15px);animation:fadeUp .8s ease .4s forwards;
+  }
+  @keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+  .hero-ctas{display:flex;gap:16px;margin-top:36px;flex-wrap:wrap;opacity:0;animation:fadeUp .8s ease .6s forwards;}
+  .btn{
+    font-family:var(--body);font-size:.86rem;letter-spacing:.04em;
+    padding:16px 32px;border-radius:1px;transition:all .35s cubic-bezier(.2,.7,.3,1);
+    display:inline-flex;align-items:center;gap:10px;
+    position:relative;overflow:hidden;
+  }
+  .btn-gold{
+    background:linear-gradient(120deg,var(--gold-deep),var(--gold) 45%,var(--gold-bright) 55%,var(--gold-deep));
+    background-size:220% 100%;
+    color:var(--ink);font-weight:500;
+  }
+  .btn-gold:hover{background-position:100% 0;box-shadow:0 8px 30px -8px rgba(201,161,92,.5);}
+  .btn-outline{border:1px solid var(--hairline);color:var(--ivory);}
+  .btn-outline:hover{border-color:var(--gold);color:var(--gold-bright);}
+  .btn .btn-shine{
+    position:absolute;top:0;left:-60%;width:40%;height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.15),transparent);
+    transform:skewX(-18deg);transition:left .6s ease;
+  }
+  .btn:hover .btn-shine{left:120%;}
+  .trust-line{
+    margin-top:44px;display:flex;gap:22px;flex-wrap:wrap;
+    font-family:var(--mono);font-size:.65rem;letter-spacing:.14em;color:var(--ivory-dim);
+    text-transform:uppercase;opacity:0;animation:fadeUp .8s ease .8s forwards;
+  }
+  .trust-line span{display:flex;align-items:center;gap:8px;}
+  .trust-line span::before{content:'';width:4px;height:4px;background:var(--gold);border-radius:50%;}
+
+  /* ===== MARQUEE ===== */
+  .marquee{
+    position:relative;background:var(--panel-2);border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);
+    padding:16px 0;overflow:hidden;white-space:nowrap;
+  }
+  .marquee-track{display:inline-flex;animation:scrollLeft 28s linear infinite;}
+  .marquee-track span{
+    font-family:var(--mono);font-size:.78rem;letter-spacing:.18em;color:var(--gold);
+    padding:0 28px;text-transform:uppercase;display:inline-flex;align-items:center;gap:28px;
+  }
+  @keyframes scrollLeft{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+  section{padding:110px clamp(20px,5vw,64px);position:relative;}
+  .section-head{max-width:640px;margin:0 auto 56px;text-align:center;}
+  .section-head h2{
+    font-family:var(--display);font-weight:600;font-size:clamp(2rem,4vw,3rem);
+    margin-top:14px;
+  }
+  .section-head p{color:var(--ivory-dim);margin-top:14px;font-size:.98rem;line-height:1.6;}
+
+  /* ===== CATEGORIES ===== */
+  .cat-grid{
+    max-width:1280px;margin:0 auto;
+    display:grid;grid-template-columns:repeat(5,1fr);gap:18px;
+    perspective:1200px;
+  }
+  .cat-card{
+    border:1px solid var(--hairline);padding:0;text-align:center;
+    background:var(--panel);transition:border-color .4s, transform .4s, box-shadow .4s;
+    cursor:pointer;position:relative;overflow:hidden;
+    aspect-ratio:3/4;display:flex;flex-direction:column;justify-content:flex-end;
+    transform-style:preserve-3d;
+  }
+  .cat-card img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    opacity:.25;transition:opacity .6s, transform .6s;
+  }
+  .cat-card:hover img{opacity:.5;transform:scale(1.12);}
+  .cat-card:hover{border-color:var(--gold);transform:translateY(-6px) rotateX(2deg);box-shadow:0 20px 40px -12px rgba(201,161,92,.15);}
+  .cat-card .content{
+    position:relative;z-index:2;
+    padding:34px 16px 26px;
+    background:linear-gradient(transparent, rgba(10,9,6,.9));
+  }
+  .cat-icon{
+    width:58px;height:58px;margin:0 auto 18px;border-radius:50%;
+    border:1px solid var(--gold-deep);display:flex;align-items:center;justify-content:center;
+    transition:background .4s, transform .4s;
+  }
+  .cat-card:hover .cat-icon{background:var(--gold);transform:translateZ(20px);}
+  .cat-icon svg{width:26px;height:26px;stroke:var(--gold-bright);fill:none;transition:stroke .4s;}
+  .cat-card:hover .cat-icon svg{stroke:var(--ink);}
+  .cat-card h3{font-family:var(--display);font-size:1.15rem;font-weight:600;letter-spacing:.02em;}
+
+  /* ===== PRODUCTS ===== */
+  .prod-grid{
+    max-width:1280px;margin:0 auto;
+    display:grid;grid-template-columns:repeat(4,1fr);gap:22px;
+    perspective:1200px;
+  }
+  .prod-card{
+    background:var(--panel);border:1px solid var(--hairline);
+    display:flex;flex-direction:column;overflow:hidden;
+    transition:border-color .4s, transform .4s, box-shadow .4s;
+    transform-style:preserve-3d;perspective:800px;
+  }
+  .prod-card:hover{border-color:var(--gold-deep);transform:translateY(-8px) rotateX(1deg);box-shadow:0 24px 48px -12px rgba(201,161,92,.2);}
+  .prod-media{
+    aspect-ratio:1/1;position:relative;
+    overflow:hidden;background:var(--panel-2);
+    transform-style:preserve-3d;
+  }
+  .prod-media img{
+    width:100%;height:100%;object-fit:cover;
+    transition:transform .8s cubic-bezier(.2,.8,.2,1);
+    transform:translateZ(0);
+  }
+  .prod-card:hover .prod-media img{transform:scale(1.12) translateZ(10px);}
+  .karat-badge{
+    position:absolute;top:12px;left:12px;
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;
+    border:1px solid var(--gold-deep);color:var(--gold-bright);
+    padding:3px 8px;background:var(--badge-bg);
+    backdrop-filter:blur(4px);z-index:2;
+  }
+  .weight-badge{
+    position:absolute;top:12px;right:12px;
+    font-family:var(--mono);font-size:.62rem;color:var(--ivory-dim);
+    padding:3px 8px;background:var(--badge-bg);backdrop-filter:blur(4px);border:1px solid var(--hairline);z-index:2;
+  }
+  .prod-media .shine{
+    position:absolute;top:0;left:-60%;width:40%;height:100%;
+    background:linear-gradient(100deg, transparent, rgba(243,220,154,.12), transparent);
+    transform:skewX(-18deg);transition:left .8s ease;z-index:2;
+  }
+  .prod-card:hover .shine{left:130%;}
+  .prod-info{padding:18px 18px 20px;display:flex;flex-direction:column;gap:6px;flex:1;}
+  .prod-info h4{font-family:var(--display);font-size:1.22rem;font-weight:600;}
+  .prod-info .cat{font-size:.72rem;color:var(--ivory-dim);letter-spacing:.06em;text-transform:uppercase;}
+  .prod-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
+  .price{font-family:var(--mono);font-size:1rem;color:var(--gold-bright);}
+  .add-btn{
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;
+    border:1px solid var(--gold-deep);padding:9px 14px;color:var(--ivory);
+    transition:background .3s,color .3s,border-color .3s,transform .3s,box-shadow .3s;
+    position:relative;overflow:hidden;
+  }
+  .add-btn:hover{background:var(--gold);color:var(--ink);border-color:var(--gold);transform:translateY(-1px);box-shadow:0 4px 12px rgba(201,161,92,.3);}
+  .add-btn.added{background:var(--garnet-bright);border-color:var(--garnet-bright);color:var(--ivory);}
+
+  /* ===== FILTER BAR ===== */
+  .filter-bar{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:10px;
+    margin-bottom:36px;padding:0 20px;
+  }
+  .filter-btn{
+    font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+    border:1px solid var(--hairline);padding:10px 22px;color:var(--ivory-dim);
+    background:var(--filter-btn-bg);cursor:pointer;transition:all .3s;
+    border-radius:1px;
+  }
+  .filter-btn:hover{border-color:var(--gold-deep);color:var(--gold-bright);}
+  .filter-btn.active{background:var(--gold);color:var(--ink);border-color:var(--gold);}
+  .filter-btn .count{font-family:var(--body);font-size:.6rem;margin-left:6px;opacity:.6;}
+
+  /* ===== TRUST BAND ===== */
+  .trust-band{background:var(--panel-2);border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);}
+  .trust-cols{
+    max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:30px;
+  }
+  .trust-col{text-align:center;padding:0 10px;}
+  .trust-col .ic{width:44px;height:44px;margin:0 auto 16px;color:var(--gold);}
+  .trust-col .ic svg{width:100%;height:100%;stroke:var(--gold);fill:none;}
+  .trust-col h5{font-family:var(--display);font-size:1.15rem;font-weight:600;margin-bottom:8px;}
+  .trust-col p{font-size:.84rem;color:var(--ivory-dim);line-height:1.5;}
+
+  /* ===== SOCIAL PROOF ===== */
+  .proof-wrap{max-width:1100px;margin:0 auto;text-align:center;}
+  .big-stat{
+    font-family:var(--display);font-weight:600;font-size:clamp(3.2rem,9vw,6rem);
+    color:var(--gold-bright);line-height:1;
+  }
+  .proof-wrap .stat-label{margin-top:10px;}
+  .testimonials{
+    margin-top:70px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;text-align:left;
+  }
+  .t-card{
+    border:1px solid var(--hairline);padding:30px;background:var(--panel);
+    transition:border-color .4s, transform .4s, box-shadow .4s;
+    transform-style:preserve-3d;perspective:600px;
+  }
+  .t-card:hover{border-color:var(--gold-deep);transform:translateY(-4px) rotateX(1deg);box-shadow:0 16px 32px -8px rgba(201,161,92,.12);}
+  .t-card .stars{color:var(--gold);font-size:.85rem;letter-spacing:2px;margin-bottom:14px;}
+  .t-card p{font-size:.92rem;line-height:1.65;color:var(--ivory-dim);font-style:italic;font-family:var(--display);font-size:1.15rem;}
+  .t-card .who{margin-top:16px;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;color:var(--ivory-dim);text-transform:uppercase;}
+
+  /* ===== INSTAGRAM ===== */
+  .insta{background:var(--panel-2);border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);text-align:center;}
+  .insta-grid{
+    max-width:900px;margin:44px auto 0;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+    perspective:1000px;
+  }
+  .insta-tile{
+    aspect-ratio:1/1;position:relative;overflow:hidden;border:1px solid var(--hairline);cursor:pointer;
+    transition:transform .4s, border-color .4s;
+    transform-style:preserve-3d;
+  }
+  .insta-tile img{width:100%;height:100%;object-fit:cover;transition:transform .6s;}
+  .insta-tile:hover{transform:rotateX(2deg) rotateY(2deg) translateZ(10px);border-color:var(--gold);}
+  .insta-tile:hover img{transform:scale(1.12);}
+  .insta-tile .insta-overlay{
+    position:absolute;inset:0;background:rgba(10,9,6,0);transition:background .3s;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .insta-tile:hover .insta-overlay{background:var(--insta-hover);}
+  .insta-tile .insta-icon{opacity:0;transform:scale(.6);transition:all .3s;}
+  .insta-tile:hover .insta-icon{opacity:1;transform:scale(1);}
+
+  /* ===== FOOTER ===== */
+  footer{padding:90px clamp(20px,5vw,64px) 40px;border-top:1px solid var(--hairline);}
+  .foot-grid{
+    max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:50px;
+  }
+  footer h6{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;}
+  .foot-logo{display:flex;align-items:center;gap:12px;}
+  .foot-logo-img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid var(--gold-deep);}
+  .foot-logo-text{font-family:var(--display);font-size:1.7rem;color:var(--gold-bright);font-weight:600;letter-spacing:.1em;}
+  footer p{color:var(--ivory-dim);font-size:.9rem;line-height:1.7;}
+  footer ul{list-style:none;}
+  footer li{margin-bottom:11px;}
+  footer a.flink{color:var(--ivory-dim);font-size:.9rem;transition:color .3s;}
+  footer a.flink:hover{color:var(--gold-bright);}
+  .foot-bottom{
+    max-width:1280px;margin:70px auto 0;padding-top:24px;border-top:1px solid var(--hairline);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:var(--ivory-dim);
+  }
+
+  /* ===== CART DRAWER ===== */
+  .overlay{
+    position:fixed;inset:0;background:var(--overlay-bg);z-index:200;
+    opacity:0;pointer-events:none;transition:opacity .4s;
+  }
+  .overlay.open{opacity:1;pointer-events:auto;}
+  .drawer{
+    position:fixed;top:0;right:0;bottom:0;width:min(420px,92vw);
+    background:var(--panel-glass);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border-left:1px solid var(--border-glass);
+    z-index:201;transform:translateX(100%);transition:transform .45s cubic-bezier(.2,.8,.2,1);
+    display:flex;flex-direction:column;
+    box-shadow:-10px 0 40px rgba(0,0,0,0.5);
+  }
+  .drawer.open{transform:translateX(0);}
+  .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:26px 26px 18px;border-bottom:1px solid var(--hairline);}
+  .drawer-head h3{font-family:var(--display);font-size:1.4rem;font-weight:600;}
+  .close-btn{width:30px;height:30px;color:var(--ivory-dim);transition:transform .3s,color .3s;cursor:pointer;}
+  .close-btn:hover{color:var(--gold-bright);transform:rotate(90deg);}
+  .close-btn svg{width:100%;height:100%;}
+  .drawer-items{flex:1;overflow-y:auto;padding:10px 26px;}
+  .empty-cart{padding:60px 0;text-align:center;color:var(--ivory-dim);font-size:.9rem;}
+  .cart-line{display:flex;gap:14px;padding:18px 0;border-bottom:1px solid var(--hairline);align-items:center;}
+  .cart-line .thumb{width:56px;height:56px;background:var(--panel-2);border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+  .cart-line .thumb img{width:100%;height:100%;object-fit:cover;}
+  .cart-line .info{flex:1;}
+  .cart-line .info h5{font-family:var(--display);font-size:1.02rem;font-weight:600;}
+  .cart-line .info .p{font-family:var(--mono);font-size:.78rem;color:var(--gold-bright);margin-top:4px;}
+  .qty-ctrl{display:flex;align-items:center;gap:10px;margin-top:8px;}
+  .qty-ctrl button{width:20px;height:20px;border:1px solid var(--hairline);font-size:.8rem;display:flex;align-items:center;justify-content:center;transition:border-color .3s,color .3s;}
+  .qty-ctrl button:hover{border-color:var(--gold);color:var(--gold-bright);}
+  .qty-ctrl span{font-family:var(--mono);font-size:.8rem;}
+  .remove-line{font-family:var(--mono);font-size:.65rem;color:var(--ivory-dim);text-decoration:underline;margin-top:2px;cursor:pointer;display:inline-block;transition:color .3s;}
+  .remove-line:hover{color:var(--garnet-bright);}
+  .drawer-foot{padding:22px 26px 30px;border-top:1px solid var(--hairline);}
+  .subtotal-row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.9rem;margin-bottom:18px;}
+  .drawer-actions{display:flex;flex-direction:column;gap:10px;}
+  .checkout-btn{width:100%;justify-content:center;}
+  .form-checkout-btn{
+    width:100%;justify-content:center;
+    background:transparent;border:1px solid var(--gold-deep);color:var(--gold-bright);
+  }
+  .form-checkout-btn:hover{background:rgba(201,161,92,.08);border-color:var(--gold);}
+
+  /* ===== CHECKOUT FORM MODAL ===== */
+  .form-overlay{
+    position:fixed;inset:0;background:var(--overlay-bg);z-index:300;
+    opacity:0;pointer-events:none;transition:opacity .5s;
+    backdrop-filter:blur(4px);
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;
+  }
+  .form-overlay.open{opacity:1;pointer-events:auto;}
+  .form-modal{
+    background:var(--panel-glass);
+    backdrop-filter:blur(25px);
+    -webkit-backdrop-filter:blur(25px);
+    border:1px solid var(--border-glass);
+    width:100%;max-width:520px;max-height:90vh;overflow-y:auto;
+    padding:44px 40px 36px;
+    position:relative;
+    transform:scale(.9) translateY(20px);
+    transition:transform .5s cubic-bezier(.2,.8,.2,1);
+    box-shadow:0 30px 70px rgba(0,0,0,0.6);
+  }
+  .form-overlay.open .form-modal{transform:scale(1) translateY(0);}
+  .form-modal::before{
+    content:'';position:absolute;top:-1px;left:20%;right:20%;height:2px;
+    background:linear-gradient(90deg,transparent,var(--gold),var(--gold-bright),var(--gold),transparent);
+    background-size:200% 100%;
+    animation:formBorder 3s linear infinite;
+  }
+  @keyframes formBorder{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+  .form-close{
+    position:absolute;top:18px;right:18px;width:28px;height:28px;
+    color:var(--ivory-dim);transition:color .3s,transform .3s;cursor:pointer;
+  }
+  .form-close:hover{color:var(--gold-bright);transform:rotate(90deg);}
+  .form-modal h3{
+    font-family:var(--display);font-size:1.6rem;font-weight:600;margin-bottom:6px;
+  }
+  .form-modal .form-sub{
+    color:var(--ivory-dim);font-size:.9rem;margin-bottom:28px;
+  }
+  .form-group{position:relative;margin-bottom:20px;}
+  .form-group input,.form-group textarea,.form-group select{
+    width:100%;padding:16px 18px 10px;
+    background:var(--form-input-bg);
+    border:1px solid var(--hairline);
+    color:var(--ivory);
+    font-family:var(--body);
+    font-size:.95rem;
+    outline:none;
+    transition:border-color .3s, box-shadow .3s, background .3s;
+    border-radius:1px;
+  }
+  .form-group textarea{resize:vertical;min-height:60px;padding-top:22px;}
+  .form-group input:focus,.form-group textarea:focus,.form-group select:focus{
+    border-color:var(--gold);
+    box-shadow:0 0 0 1px rgba(201,161,92,.15), 0 4px 12px rgba(201,161,92,.05);
+    background:rgba(255,255,255,.05);
+  }
+  .form-group label{
+    position:absolute;top:14px;left:18px;
+    color:var(--ivory-dim);
+    font-size:.85rem;
+    pointer-events:none;
+    transition:all .25s ease;
+    font-family:var(--body);
+  }
+  .form-group input:focus ~ label,
+  .form-group input:not(:placeholder-shown) ~ label,
+  .form-group textarea:focus ~ label,
+  .form-group textarea:not(:placeholder-shown) ~ label{
+    top:4px;font-size:.65rem;color:var(--gold);
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    font-family:var(--mono);
+  }
+  .form-group .req{color:var(--garnet-bright);margin-left:2px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .form-submit-btn{
+    width:100%;justify-content:center;margin-top:6px;
+    background:linear-gradient(120deg,var(--gold-deep),var(--gold) 45%,var(--gold-bright) 55%,var(--gold-deep));
+    background-size:220% 100%;
+    color:var(--ink);font-weight:500;
+    padding:18px 32px;
+    font-family:var(--body);font-size:.9rem;letter-spacing:.06em;
+    border:none;cursor:pointer;
+    transition:background-position .4s, box-shadow .4s;
+    position:relative;overflow:hidden;
+  }
+  .form-submit-btn:hover{background-position:100% 0;box-shadow:0 8px 30px -8px rgba(201,161,92,.5);}
+  .form-submit-btn .btn-shine{
+    position:absolute;top:0;left:-60%;width:40%;height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.15),transparent);
+    transform:skewX(-18deg);transition:left .6s ease;
+  }
+  .form-submit-btn:hover .btn-shine{left:120%;}
+  .form-or{
+    display:flex;align-items:center;gap:14px;margin:18px 0;
+    color:var(--ivory-dim);font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+  }
+  .form-or::before,.form-or::after{content:'';flex:1;height:1px;background:var(--hairline);}
+  .form-wa-btn{
+    width:100%;justify-content:center;
+    border:1px solid var(--hairline);color:var(--ivory);padding:16px 32px;
+    font-family:var(--body);font-size:.86rem;letter-spacing:.04em;
+    display:inline-flex;align-items:center;gap:10px;
+    transition:border-color .3s,color .3s,background .3s;border-radius:1px;cursor:pointer;
+  }
+  .form-wa-btn:hover{border-color:var(--gold);color:var(--gold-bright);background:rgba(201,161,92,.05);}
+  .form-wa-btn svg{width:16px;height:16px;stroke:var(--gold-bright);}
+  .form-success{
+    display:none;text-align:center;padding:30px 0;
+    animation:fadeUp .5s ease forwards;
+  }
+  .form-success .check{
+    width:60px;height:60px;margin:0 auto 18px;
+    border:2px solid var(--gold);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .form-success .check svg{width:28px;height:28px;stroke:var(--gold-bright);}
+  .form-success h4{font-family:var(--display);font-size:1.4rem;font-weight:600;}
+  .form-success p{color:var(--ivory-dim);margin-top:8px;font-size:.9rem;}
+
+  /* ===== PRODUCT DETAIL MODAL ===== */
+  .detail-overlay{
+    position:fixed;inset:0;z-index:400;
+    background:rgba(0,0,0,.8);backdrop-filter:blur(8px);
+    opacity:0;pointer-events:none;transition:opacity .5s;
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;
+  }
+  .detail-overlay.open{opacity:1;pointer-events:auto;}
+  .detail-modal{
+    background:var(--panel-glass);
+    backdrop-filter:blur(25px);
+    -webkit-backdrop-filter:blur(25px);
+    border:1px solid var(--border-glass);
+    width:100%;max-width:960px;max-height:90vh;
+    display:grid;grid-template-columns:1fr 1fr;
+    transform:scale(.92) translateY(30px);transition:transform .6s cubic-bezier(.2,.8,.2,1);
+    position:relative;overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,0.7);
+  }
+  .detail-overlay.open .detail-modal{transform:scale(1) translateY(0);}
+  .detail-modal::before{
+    content:'';position:absolute;top:-1px;left:15%;right:15%;height:2px;
+    background:linear-gradient(90deg,transparent,var(--gold),var(--gold-bright),var(--gold),transparent);
+    background-size:200% 100%;
+    animation:formBorder 3s linear infinite;
+    z-index:5;
+  }
+  .detail-close{
+    position:absolute;top:16px;right:16px;z-index:10;
+    width:34px;height:34px;border:1px solid var(--hairline);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ivory-dim);background:var(--badge-bg);
+    backdrop-filter:blur(4px);
+    transition:color .3s,transform .3s,border-color .3s;cursor:pointer;
+  }
+  .detail-close:hover{color:var(--gold-bright);transform:rotate(90deg);border-color:var(--gold);}
+  .detail-close svg{width:16px;height:16px;stroke:currentColor;}
+  .detail-gallery{
+    position:relative;overflow:hidden;background:var(--panel-2);
+    min-height:400px;
+  }
+  .detail-gallery .main-img{
+    width:100%;height:100%;object-fit:cover;
+    transition:transform .8s cubic-bezier(.2,.8,.2,1);
+  }
+  .detail-gallery:hover .main-img{transform:scale(1.05);}
+  .detail-thumbs{
+    position:absolute;bottom:14px;left:14px;right:14px;
+    display:flex;gap:8px;z-index:3;
+  }
+  .detail-thumbs button{
+    width:48px;height:48px;border:2px solid transparent;
+    overflow:hidden;cursor:pointer;padding:0;
+    transition:border-color .3s,transform .3s;
+    background:rgba(10,9,6,.5);backdrop-filter:blur(4px);
+  }
+  .detail-thumbs button.active{border-color:var(--gold);transform:translateY(-2px);}
+  .detail-thumbs button img{width:100%;height:100%;object-fit:cover;}
+  .detail-info{
+    padding:40px 36px;display:flex;flex-direction:column;
+    overflow-y:auto;
+  }
+  .detail-info .eyebrow{display:inline-block;margin-bottom:8px;}
+  .detail-info h2{
+    font-family:var(--display);font-size:clamp(1.4rem,3vw,2rem);font-weight:600;
+    margin-bottom:8px;
+  }
+  .detail-info .detail-price{
+    font-family:var(--mono);font-size:1.6rem;color:var(--gold-bright);
+    margin-bottom:6px;
+  }
+  .detail-info .detail-weight{
+    font-family:var(--mono);font-size:.75rem;color:var(--ivory-dim);
+    margin-bottom:18px;
+  }
+  .detail-info .detail-desc{
+    color:var(--ivory-dim);line-height:1.8;font-size:.95rem;
+    padding:18px 0;border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);
+    margin-bottom:18px;
+  }
+  .detail-actions{display:flex;gap:12px;margin-top:auto;}
+  .detail-actions .btn{flex:1;justify-content:center;}
+  .detail-actions .btn-outline{flex:0 0 auto;}
+
+  .detail-nav-btn{
+    position:absolute;top:50%;transform:translateY(-50%);z-index:3;
+    width:40px;height:40px;border:1px solid var(--hairline);
+    background:rgba(10,9,6,.5);backdrop-filter:blur(4px);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ivory);cursor:pointer;
+    transition:background .3s,border-color .3s;
+    font-size:1.2rem;
+  }
+  .detail-nav-btn:hover{background:var(--gold);color:var(--ink);border-color:var(--gold);}
+  .detail-nav-prev{left:10px;}
+  .detail-nav-next{right:10px;}
+
+  .boutique-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+
+  .boutique-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+
+  /* ===== REVEAL ===== */
+  .reveal{opacity:0;transform:translateY(32px);transition:opacity .8s ease,transform .8s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+  .reveal-scale{opacity:0;transform:scale(.92);transition:opacity .8s ease,transform .8s ease;}
+  .reveal-scale.in{opacity:1;transform:scale(1);}
+
+  /* ===== MOBILE ===== */
+  @media (max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-art{height:340px;order:-1;}
+    nav.links{display:none;}
+    .cat-grid{grid-template-columns:repeat(3,1fr);}
+    .prod-grid{grid-template-columns:repeat(2,1fr);}
+    .trust-cols{grid-template-columns:repeat(2,1fr);}
+    .testimonials{grid-template-columns:1fr;}
+    .insta-grid{grid-template-columns:repeat(4,1fr);}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+    .wa-pill span{display:none;}
+    .wa-pill{padding:10px;}
+    .form-row{grid-template-columns:1fr;}
+    .form-modal{padding:32px 24px;}
+    .detail-modal{
+      grid-template-columns:1fr;
+      max-height:95vh;
+      overflow-y:auto;
+      width:96%;
+      max-width:500px;
+      margin:0 auto;
+    }
+    .boutique-grid{grid-template-columns:1fr;}
+    .boutique-grid{grid-template-columns:1fr;}
+    .detail-gallery{
+      min-height:280px;
+      height:280px;
+    }
+    .detail-info{
+      padding:24px 20px;
+    }
+  }
+  @media (max-width:560px){
+    .cat-grid{grid-template-columns:repeat(2,1fr);}
+    .prod-grid{grid-template-columns:1fr;}
+    .trust-cols{grid-template-columns:1fr;}
+    .foot-grid{grid-template-columns:1fr;gap:36px;}
+    section{padding:80px 20px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<canvas id="bg3d-canvas"></canvas>
+<canvas id="ambient-canvas"></canvas>
+<canvas id="sparkle-canvas"></canvas>
+
+<!-- ================= NAV ================= -->
+<header id="siteHeader">
+  <a href="#" class="logo">
+    <img src="Insta_Saver_@bijouterie.walae_dp_HD.jpg" alt="WALAE Bijouterie" class="logo-img">
+    <div class="logo-text">
+      <span class="name">WALAE</span>
+      <span class="sub">Joaillerie · Tanger</span>
+    </div>
+  </a>
+  <nav class="links">
+    <a href="#collection">Collection</a>
+    <a href="#categories">Catégories</a>
+    <a href="#histoire">Notre histoire</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="header-actions">
+    <a class="wa-pill" href="https://wa.me/212539341954" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M20 12a8 8 0 1 1-3.6-6.7M20 12l-2-1M4 20l1.3-3.8"/></svg>
+      <span>05 39 34 19 54</span>
+    </a>
+    <button class="icon-btn" id="cartBtn" aria-label="Panier">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M4 6h2l1.6 10.2a2 2 0 0 0 2 1.8h7.8a2 2 0 0 0 2-1.6L21 8H7"/><circle cx="10" cy="21" r="1"/><circle cx="17" cy="21" r="1"/></svg>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="hero">
+  <div class="hero-bg">
+    <img src="hero-3d.png" alt="Collier en or Wala'e" id="heroImg">
+    <div class="overlay"></div>
+    <div class="glow"></div>
+  </div>
+  <div class="hero-grid">
+    <div>
+      <span class="eyebrow">Wala'e Jewelry · Diamant 💎</span>
+      <h1>
+        <span class="line"><span>L'or qui</span></span>
+        <span class="line"><span class="gold-text">vous ressemble.</span></span>
+      </h1>
+      <p class="lede">Vente et achat de bijoux d'or et diamants. Boutique à kissariat saada, Tanger.</p>
+      <div class="hero-ctas">
+        <a href="#collection" class="btn btn-gold">Découvrir la collection <span class="btn-shine"></span></a>
+        <a href="https://wa.me/212539341954?text=Bonjour%2C%20je%20souhaite%20des%20informations%20sur%20vos%20bijoux%20en%20or%2018K." target="_blank" rel="noopener" class="btn btn-outline">Nous écrire sur WhatsApp <span class="btn-shine"></span></a>
+      </div>
+      <div class="trust-line">
+        <span>Or 18K certifié</span>
+        <span>Livraison 7j/7</span>
+        <span>Paiement à la livraison</span>
+        <span>Tanger, Maroc</span>
+      </div>
+    </div>
+</section>
+
+<!-- ================= MARQUEE ================= -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span>✦ OR 18K CERTIFIÉ &nbsp; ✦ &nbsp; LIVRAISON PARTOUT AU MAROC &nbsp; ✦ &nbsp; PAIEMENT À LA LIVRAISON &nbsp; ✦ &nbsp; TANGER, MAROC &nbsp; ✦ &nbsp; OUVERT 7J/7 · 11H–22H &nbsp;</span>
+    <span>✦ OR 18K CERTIFIÉ &nbsp; ✦ &nbsp; LIVRAISON PARTOUT AU MAROC &nbsp; ✦ &nbsp; PAIEMENT À LA LIVRAISON &nbsp; ✦ &nbsp; TANGER, MAROC &nbsp; ✦ &nbsp; OUVERT 7J/7 · 11H–22H &nbsp;</span>
+  </div>
+</div>
+
+<!-- ================= CATEGORIES ================= -->
+<section id="categories">
+  <div class="section-head reveal">
+    <span class="eyebrow">Nos univers</span>
+    <h2>Choisissez votre pièce</h2>
+    <p>Cinq univers, une même exigence : de l'or 18K choisi avec soin.</p>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-card reveal-scale" data-cat="Bagues">
+      <img src="https://images.unsplash.com/photo-1678924721537-9d7902389c8e?auto=format&fit=crop&w=400&q=80" alt="Bagues" loading="lazy">
+      <div class="content">
+        <div class="cat-icon"><svg viewBox="0 0 24 24" stroke-width="1.5"><circle cx="12" cy="15" r="6"/><path d="M9 9l3-6 3 6"/></svg></div>
+        <h3>Bagues</h3>
+      </div>
+    </div>
+    <div class="cat-card reveal-scale" data-cat="Bracelets">
+      <img src="https://images.unsplash.com/photo-1717605383946-96c6884c36b4?auto=format&fit=crop&w=400&q=80" alt="Bracelets" loading="lazy">
+      <div class="content">
+        <div class="cat-icon"><svg viewBox="0 0 24 24" stroke-width="1.5"><ellipse cx="12" cy="12" rx="8" ry="5"/><ellipse cx="12" cy="12" rx="8" ry="5" transform="rotate(60 12 12)"/></svg></div>
+        <h3>Bracelets</h3>
+      </div>
+    </div>
+    <div class="cat-card reveal-scale" data-cat="Colliers">
+      <img src="https://images.unsplash.com/photo-1685489802596-673d1b55bd38?auto=format&fit=crop&w=400&q=80" alt="Colliers" loading="lazy">
+      <div class="content">
+        <div class="cat-icon"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M4 4c2 8 4 12 8 12s6-4 8-12"/><circle cx="12" cy="18" r="2.2"/></svg></div>
+        <h3>Colliers</h3>
+      </div>
+    </div>
+    <div class="cat-card reveal-scale" data-cat="Boucles d'oreilles">
+      <img src="https://images.unsplash.com/photo-1680968921717-4abbbe793bb3?auto=format&fit=crop&w=400&q=80" alt="Boucles" loading="lazy">
+      <div class="content">
+        <div class="cat-icon"><svg viewBox="0 0 24 24" stroke-width="1.5"><circle cx="12" cy="7" r="2.2"/><path d="M12 9.2v3.5l-3 6M12 12.7l3 6"/></svg></div>
+        <h3>Boucles</h3>
+      </div>
+    </div>
+    <div class="cat-card reveal-scale" data-cat="Ensembles">
+      <img src="https://images.unsplash.com/photo-1771515411694-57fb626159d1?auto=format&fit=crop&w=400&q=80" alt="Ensembles" loading="lazy">
+      <div class="content">
+        <div class="cat-icon"><svg viewBox="0 0 24 24" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="16" r="3"/><path d="M10.5 10.5l3 3"/></svg></div>
+        <h3>Ensembles</h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRODUCTS ================= -->
+<section id="collection">
+  <div class="section-head reveal">
+    <span class="eyebrow">Sélection de la semaine</span>
+    <h2 id="collectionTitle">La collection</h2>
+    <p id="collectionSub">Chaque pièce est pesée et poinçonnée 18K avant de vous être livrée.</p>
+  </div>
+  <div class="filter-bar" id="filterBar"></div>
+  <div class="prod-grid" id="prodGrid"></div>
+</section>
+
+<!-- ================= TRUST BAND ================= -->
+<section class="trust-band">
+  <div class="trust-cols">
+    <div class="trust-col reveal">
+      <div class="ic"><svg viewBox="0 0 24 24" stroke-width="1.4"><path d="M12 2l2.6 5.3 5.9.8-4.3 4.1 1 5.8L12 15l-5.2 3 1-5.8-4.3-4.1 5.9-.8z"/></svg></div>
+      <h5>Or 18K certifié</h5>
+      <p>Chaque bijou est poinçonné et garanti 18 carats.</p>
+    </div>
+    <div class="trust-col reveal">
+      <div class="ic"><svg viewBox="0 0 24 24" stroke-width="1.4"><rect x="2" y="8" width="13" height="9" rx="1"/><path d="M15 11h3l3 3v3h-6z"/><circle cx="7" cy="19" r="1.6"/><circle cx="17.5" cy="19" r="1.6"/></svg></div>
+      <h5>Livraison au Maroc</h5>
+      <p>Expédition rapide dans toutes les villes du royaume.</p>
+    </div>
+    <div class="trust-col reveal">
+      <div class="ic"><svg viewBox="0 0 24 24" stroke-width="1.4"><rect x="2.5" y="5" width="19" height="14" rx="1.5"/><path d="M2.5 9.5h19"/><path d="M6 15h4"/></svg></div>
+      <h5>Paiement à la livraison</h5>
+      <p>Vous payez seulement à réception de votre commande.</p>
+    </div>
+    <div class="trust-col reveal">
+      <div class="ic"><svg viewBox="0 0 24 24" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+      <h5>7j/7 · 11h–22h</h5>
+      <p>Notre équipe vous répond tous les jours, sans exception.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SOCIAL PROOF ================= -->
+<section id="histoire">
+  <div class="proof-wrap">
+    <span class="eyebrow reveal">Notre communauté</span>
+    <div class="big-stat reveal">81 400+</div>
+    <p class="stat-label reveal" style="color:var(--ivory-dim)">clientes et clients nous suivent et nous font confiance à travers le Maroc.</p>
+    <div class="testimonials">
+      <div class="t-card reveal">
+        <div class="stars">★★★★★</div>
+        <p>"Bijou reçu à Rabat en deux jours, exactement comme sur la photo. Un vrai travail sérieux."</p>
+        <div class="who">— Sanae, cliente à Rabat</div>
+      </div>
+      <div class="t-card reveal">
+        <div class="stars">★★★★★</div>
+        <p>"Le poinçon 18K est bien visible, et le service client a répondu à minuit passé. Très pro."</p>
+        <div class="who">— Yassine, client à Casablanca</div>
+      </div>
+      <div class="t-card reveal">
+        <div class="stars">★★★★★</div>
+        <p>"J'ai acheté ma bague de fiançailles ici. Finition impeccable, prix honnête."</p>
+        <div class="who">— Imane, cliente à Tanger</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NOTRE BOUTIQUE ================= -->
+<section style="border-top:1px solid var(--hairline);">
+    <div class="boutique-grid">
+      <div class="reveal">
+      <span class="eyebrow">Notre boutique</span>
+      <h2 style="font-family:var(--display);font-weight:600;font-size:clamp(1.8rem,3.5vw,2.8rem);margin:14px 0 20px;">Visitez-nous à Tanger</h2>
+      <p style="color:var(--ivory-dim);line-height:1.8;font-size:1rem;">Wala'e Jewelry — l'excellence des bijoux en or et diamants à Tanger.</p>
+      <div style="margin-top:24px;display:flex;gap:30px;flex-wrap:wrap;">
+        <div><span style="font-family:var(--mono);font-size:1.2rem;color:var(--gold-bright);">+15 ans</span><br><span style="font-size:.78rem;color:var(--ivory-dim);">d'expertise</span></div>
+        <div><span style="font-family:var(--mono);font-size:1.2rem;color:var(--gold-bright);">100%</span><br><span style="font-size:.78rem;color:var(--ivory-dim);">or 18K certifié</span></div>
+        <div><span style="font-family:var(--mono);font-size:1.2rem;color:var(--gold-bright);">7j/7</span><br><span style="font-size:.78rem;color:var(--ivory-dim);">ouvert de 11h à 22h</span></div>
+      </div>
+    </div>
+    <div class="reveal-scale" style="position:relative;">
+      <div style="width:100%;aspect-ratio:4/3;border:1px solid var(--hairline);overflow:hidden;">
+        <iframe src="https://www.google.com/maps?q=35.7673,-5.7998&output=embed" width="100%" height="100%" style="border:0;display:block;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div style="position:absolute;bottom:-14px;left:-14px;background:var(--panel);border:1px solid var(--gold-deep);padding:16px 20px;">
+        <span style="font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;color:var(--gold);">BIJOUTERIE WALAE</span>
+        <br>
+        <span style="font-size:.8rem;color:var(--ivory-dim);">Tanger · Kissariat Saada</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= INSTAGRAM ================= -->
+<section class="insta">
+  <span class="eyebrow reveal">@bijouterie.walae</span>
+  <h2 class="reveal" style="font-family:var(--display);font-weight:600;font-size:clamp(1.8rem,3.5vw,2.6rem);margin-top:14px;">Suivez-nous sur Instagram</h2>
+  <div class="insta-grid reveal" id="instaGrid"></div>
+  <a href="https://www.instagram.com/bijouterie.walae/" target="_blank" rel="noopener" class="btn btn-outline reveal" style="margin-top:36px;display:inline-flex;">Voir le profil Instagram <span class="btn-shine"></span></a>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer id="contact">
+  <div class="foot-grid">
+    <div>
+      <div class="foot-logo">
+        <img src="Insta_Saver_@bijouterie.walae_dp_HD.jpg" alt="Wala'e" class="foot-logo-img">
+        <span class="foot-logo-text">WALAE</span>
+      </div>
+      <p style="margin-top:16px;max-width:280px;">Bijouterie d'or 18K. Vente, achat et livraison partout au Maroc.</p>
+    </div>
+    <div>
+      <h6>Boutique</h6>
+      <ul>
+        <li><a class="flink" href="#collection">Collection</a></li>
+        <li><a class="flink" href="#categories">Catégories</a></li>
+        <li><a class="flink" href="#histoire">Avis clients</a></li>
+      </ul>
+    </div>
+    <div>
+      <h6>Contact</h6>
+      <ul>
+        <li><a class="flink" href="tel:+212539341954">05 39 34 19 54</a></li>
+        <li><a class="flink" href="https://wa.me/212539341954" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a class="flink" href="https://www.instagram.com/bijouterie.walae/" target="_blank" rel="noopener">Instagram</a></li>
+      </ul>
+    </div>
+    <div>
+      <h6>Boutique</h6>
+      <ul>
+        <li style="color:var(--ivory-dim);">Kissariat Saada<br>Rue du Mexique, Tanger</li>
+        <li><a class="flink" href="https://www.google.com/maps?q=35.7673,-5.7998" target="_blank" rel="noopener">Voir sur la carte →</a></li>
+        <li style="color:var(--ivory-dim);">Ouvert 7j/7</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 WALAE BIJOUTERIE — TANGER, MAROC</span>
+    <span>OR 18K · FAIT AVEC SOIN</span>
+  </div>
+</footer>
+
+<!-- ================= CART DRAWER ================= -->
+<div class="overlay" id="overlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h3>Votre panier</h3>
+    <button class="close-btn" id="closeDrawer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="drawer-items" id="drawerItems"></div>
+  <div class="drawer-foot">
+    <div class="subtotal-row"><span>Sous-total</span><span id="subtotal">0 MAD</span></div>
+    <div class="drawer-actions">
+      <a href="#" id="waCheckout" class="btn btn-gold checkout-btn" target="_blank" rel="noopener">Commander via WhatsApp <span class="btn-shine"></span></a>
+      <button class="btn form-checkout-btn" id="formCheckoutBtn">Passer par le formulaire</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CHECKOUT FORM MODAL ================= -->
+<div class="form-overlay" id="formOverlay">
+  <div class="form-modal">
+    <button class="form-close" id="formClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div id="formContent">
+      <h3>Finaliser ma commande</h3>
+      <p class="form-sub">Remplissez vos coordonnées pour recevoir votre bijou.</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <input type="text" id="fPrenom" placeholder=" " autocomplete="given-name">
+          <label for="fPrenom">Prénom <span class="req">*</span></label>
+        </div>
+        <div class="form-group">
+          <input type="text" id="fNom" placeholder=" " autocomplete="family-name">
+          <label for="fNom">Nom <span class="req">*</span></label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <input type="tel" id="fTel" placeholder=" " autocomplete="tel">
+        <label for="fTel">Téléphone <span class="req">*</span></label>
+      </div>
+
+      <div class="form-group">
+        <input type="text" id="fVille" placeholder=" " autocomplete="address-level2">
+        <label for="fVille">Ville <span class="req">*</span></label>
+      </div>
+
+      <div class="form-group">
+        <textarea id="fAdresse" placeholder=" " rows="2"></textarea>
+        <label for="fAdresse">Adresse complète <span class="req">*</span></label>
+      </div>
+
+      <div class="form-group">
+        <textarea id="fNotes" placeholder=" " rows="2"></textarea>
+        <label for="fNotes">Notes (optionnel)</label>
+      </div>
+
+      <button class="form-submit-btn" id="formSubmit">
+        Confirmer la commande
+        <span class="btn-shine"></span>
+      </button>
+
+      <div class="form-or">ou</div>
+
+      <a href="#" id="formWaBtn" class="form-wa-btn" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M20 12a8 8 0 1 1-3.6-6.7M20 12l-2-1M4 20l1.3-3.8"/></svg>
+        Commander via WhatsApp sans formulaire
+      </a>
+    </div>
+
+    <div class="form-success" id="formSuccess">
+      <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <h4>Commande envoyée !</h4>
+      <p>Nous vous contacterons dans quelques instants sur WhatsApp pour confirmer votre commande.</p>
+      <a href="#" class="btn btn-outline" style="margin-top:24px;display:inline-flex;" id="formSuccessClose">Fermer</a>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =============== 3D BACKGROUND RINGS =============== */
+const bgCanvas = document.getElementById('bg3d-canvas');
+const bgCtx = bgCanvas.getContext('2d');
+let bgW, bgH;
+function resizeBg(){
+  bgW = bgCanvas.width = window.innerWidth;
+  bgH = bgCanvas.height = window.innerHeight;
+}
+resizeBg();
+window.addEventListener('resize', resizeBg);
+
+let mouseX = -1000, mouseY = -1000;
+
+class Ring3D {
+  constructor(){
+    this.reset();
+  }
+  reset(){
+    this.radius = 40 + Math.random() * 120;
+    this.x = Math.random() * bgW;
+    this.y = Math.random() * bgH;
+    this.z = Math.random() * 600 - 300;
+    this.rotX = Math.random() * Math.PI * 2;
+    this.rotY = Math.random() * Math.PI * 2;
+    this.rotZ = Math.random() * Math.PI * 2;
+    this.speedX = (Math.random() - 0.5) * 0.02;
+    this.speedY = (Math.random() - 0.5) * 0.02;
+    this.speedZ = (Math.random() - 0.5) * 0.02;
+    this.thickness = 1 + Math.random() * 2;
+    this.opacity = 0.03 + Math.random() * 0.06;
+  }
+  update(){
+    this.rotX += this.speedX;
+    this.rotY += this.speedY;
+    this.rotZ += this.speedZ;
+    if(this.x < -200) this.x = bgW + 200;
+    if(this.x > bgW + 200) this.x = -200;
+    if(this.y < -200) this.y = bgH + 200;
+    if(this.y > bgH + 200) this.y = -200;
+  }
+  draw(ctx){
+    const perspective = 800;
+    const scale = perspective / (perspective + this.z);
+    const cx = this.x + (mouseX - this.x) * 0.01;
+    const cy = this.y + (mouseY - this.y) * 0.01;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(scale, scale);
+    ctx.rotate(this.rotZ);
+    ctx.globalAlpha = this.opacity * (0.5 + scale * 0.5);
+    ctx.strokeStyle = '#c9a15c';
+    ctx.lineWidth = this.thickness;
+    ctx.beginPath();
+
+    const pts = 40;
+    for(let i=0; i<=pts; i++){
+      const theta = (i/pts) * Math.PI * 2;
+      const x = Math.cos(theta) * this.radius;
+      const y = Math.sin(theta) * this.radius;
+      const rX = x * Math.cos(this.rotX) - y * Math.sin(this.rotX);
+      const rY = x * Math.sin(this.rotX) * Math.sin(this.rotY) + y * Math.cos(this.rotX);
+      const rZ = x * Math.sin(this.rotX) * Math.cos(this.rotY) + y * Math.cos(this.rotX) * Math.sin(this.rotY);
+      if(i===0) ctx.moveTo(rX, rY);
+      else ctx.lineTo(rX, rY);
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+const rings = [];
+for(let i=0; i<8; i++) rings.push(new Ring3D());
+
+function animateBg(){
+  bgCtx.clearRect(0,0,bgW,bgH);
+  rings.forEach(r=>{ r.update(); r.draw(bgCtx); });
+  requestAnimationFrame(animateBg);
+}
+animateBg();
+
+/* =============== AMBIENT GOLD DUST =============== */
+const ambCanvas = document.getElementById('ambient-canvas');
+const ambCtx = ambCanvas.getContext('2d');
+let ambW, ambH;
+function resizeAmb(){
+  ambW = ambCanvas.width = window.innerWidth;
+  ambH = ambCanvas.height = window.innerHeight;
+}
+resizeAmb();
+window.addEventListener('resize', resizeAmb);
+
+const dust = [];
+for(let i=0; i<50; i++){
+  dust.push({
+    x: Math.random()*ambW,
+    y: Math.random()*ambH,
+    size: 0.5+Math.random()*2,
+    speed: 0.1+Math.random()*0.3,
+    drift: (Math.random()-0.5)*0.2,
+    opacity: 0.1+Math.random()*0.4,
+    phase: Math.random()*Math.PI*2
+  });
+}
+
+function animateDust(){
+  ambCtx.clearRect(0,0,ambW,ambH);
+  const time = Date.now() * 0.001;
+  dust.forEach(d=>{
+    d.y -= d.speed;
+    d.x += Math.sin(time + d.phase) * d.drift;
+    if(d.y < -10){ d.y = ambH + 10; d.x = Math.random()*ambW; }
+    if(d.x < -10) d.x = ambW + 10;
+    if(d.x > ambW + 10) d.x = -10;
+    const flicker = 0.6 + 0.4 * Math.sin(time * 2 + d.phase);
+    ambCtx.beginPath();
+    ambCtx.arc(d.x, d.y, d.size, 0, Math.PI*2);
+    ambCtx.fillStyle = `rgba(201,161,92,${d.opacity * flicker})`;
+    ambCtx.fill();
+  });
+  requestAnimationFrame(animateDust);
+}
+animateDust();
+
+/* =============== SPARKLE CURSOR =============== */
+const spCanvas = document.getElementById('sparkle-canvas');
+const sctx = spCanvas.getContext('2d');
+let spW, spH;
+function resizeSparkles(){
+  spW = spCanvas.width = window.innerWidth;
+  spH = spCanvas.height = window.innerHeight;
+}
+resizeSparkles();
+window.addEventListener('resize', resizeSparkles);
+
+const sparkles = [];
+const MAX_SPARKLES = 150;
+
+function addSparkles(x, y, count){
+  for(let i=0; i<count && sparkles.length<MAX_SPARKLES; i++){
+    const angle = Math.random()*Math.PI*2;
+    const speed = 0.5+Math.random()*4;
+    sparkles.push({
+      x, y,
+      vx: Math.cos(angle)*speed,
+      vy: Math.sin(angle)*speed - 0.8,
+      life: 1,
+      decay: 0.008+Math.random()*0.018,
+      size: 3+Math.random()*5,
+      hue: 35+Math.random()*25
+    });
+  }
+}
+
+let lastSparkleTime = 0;
+
+document.addEventListener('mousemove', e=>{
+  mouseX = e.clientX; mouseY = e.clientY;
+  const now = Date.now();
+  if(now - lastSparkleTime > 25){
+    addSparkles(mouseX, mouseY, 2);
+    lastSparkleTime = now;
+  }
+});
+
+document.addEventListener('touchmove', e=>{
+  const t = e.touches[0];
+  mouseX = t.clientX; mouseY = t.clientY;
+  addSparkles(mouseX, mouseY, 1);
+}, {passive:true});
+
+document.addEventListener('click', e=>{
+  if(e.target.closest('button') || e.target.closest('a')) {
+    addSparkles(e.clientX, e.clientY, 8);
+  } else {
+    addSparkles(e.clientX, e.clientY, 20);
+  }
+});
+
+function drawSparkleStar(ctx, cx, cy, outerRadius, innerRadius, color) {
+  let rot = Math.PI / 2 * 3;
+  let x = cx;
+  let y = cy;
+  let step = Math.PI / 4;
+
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - outerRadius);
+  for (let i = 0; i < 4; i++) {
+    x = cx + Math.cos(rot) * outerRadius;
+    y = cy + Math.sin(rot) * outerRadius;
+    ctx.lineTo(x, y);
+    rot += step;
+
+    x = cx + Math.cos(rot) * innerRadius;
+    y = cy + Math.sin(rot) * innerRadius;
+    ctx.lineTo(x, y);
+    rot += step;
+  }
+  ctx.lineTo(cx, cy - outerRadius);
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+function animateSparkles(){
+  sctx.clearRect(0,0,spW,spH);
+  for(let i=sparkles.length-1; i>=0; i--){
+    const p = sparkles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += .03;
+    p.vx *= .98;
+    p.life -= p.decay;
+    if(p.life <= 0){ sparkles.splice(i,1); continue; }
+    
+    sctx.save();
+    const size = p.size * p.life;
+    drawSparkleStar(sctx, p.x, p.y, size, size * 0.22, `hsla(${p.hue}, 85%, 65%, ${p.life * 0.85})`);
+    sctx.restore();
+  }
+  requestAnimationFrame(animateSparkles);
+}
+animateSparkles();
+
+/* =============== PARALLAX HERO + 3D TILT =============== */
+const heroImg = document.getElementById('heroImg');
+let heroMX = 0, heroMY = 0;
+document.addEventListener('mousemove', e=>{
+  heroMX = (e.clientX/innerWidth - .5) * 2;
+  heroMY = (e.clientY/innerHeight - .5) * 2;
+});
+(function heroTilt(){
+  if(heroImg){
+    const scrolled = window.scrollY;
+    const scrollOffset = scrolled < innerHeight ? scrolled * .08 : innerHeight * .08;
+    heroImg.style.transform = `scale(1.06) translateY(${scrollOffset}px) translate(${heroMX*-6}px,${heroMY*-4}px)`;
+  }
+  requestAnimationFrame(heroTilt);
+})();
+
+/* =============== DATA =============== */
+const R = 'https://images.unsplash.com/photo-1678924721537-9d7902389c8e?auto=format&fit=crop&w=600&q=80';
+const R2 = 'https://images.unsplash.com/photo-1689777238091-59591cdf13e7?auto=format&fit=crop&w=600&q=80';
+const R3 = 'https://images.unsplash.com/photo-1763256614634-7feb3ff79ff3?auto=format&fit=crop&w=600&q=80';
+const R4 = 'https://images.unsplash.com/photo-1758995115445-c91788f5aa24?auto=format&fit=crop&w=600&q=80';
+const R5 = 'https://images.unsplash.com/photo-1708222170603-12471477b1d9?auto=format&fit=crop&w=600&q=80';
+const B1 = 'https://images.unsplash.com/photo-1717605383946-96c6884c36b4?auto=format&fit=crop&w=600&q=80';
+const B2 = 'https://images.unsplash.com/photo-1708389828485-66de31e8a165?auto=format&fit=crop&w=600&q=80';
+const B3 = 'https://images.unsplash.com/photo-1708220040823-7171b8369b38?auto=format&fit=crop&w=600&q=80';
+const B4 = 'https://images.unsplash.com/photo-1740567389909-b36e9cadbef9?auto=format&fit=crop&w=600&q=80';
+const B5 = 'https://images.unsplash.com/photo-1703034390461-0b978d9bd21d?auto=format&fit=crop&w=600&q=80';
+const C1 = 'https://images.unsplash.com/photo-1685489802596-673d1b55bd38?auto=format&fit=crop&w=600&q=80';
+const C2 = 'https://images.unsplash.com/photo-1667013829910-0c08b562abd6?auto=format&fit=crop&w=600&q=80';
+const C3 = 'https://images.unsplash.com/photo-1761210875101-1273b9ae5600?auto=format&fit=crop&w=600&q=80';
+const C4 = 'https://images.unsplash.com/photo-1711916788709-cc1c76e886cc?auto=format&fit=crop&w=600&q=80';
+const C5 = 'https://images.unsplash.com/photo-1749027862158-1bb97f000f1c?auto=format&fit=crop&w=600&q=80';
+const E1 = 'https://images.unsplash.com/photo-1680968921717-4abbbe793bb3?auto=format&fit=crop&w=600&q=80';
+const E2 = 'https://images.unsplash.com/photo-1632525230528-ec17c49bc168?auto=format&fit=crop&w=600&q=80';
+const E3 = 'https://images.unsplash.com/photo-1708222169914-5df08ce21ee5?auto=format&fit=crop&w=600&q=80';
+const E4 = 'https://images.unsplash.com/photo-1680789527299-dbf53044f48b?auto=format&fit=crop&w=600&q=80';
+const S1 = 'https://images.unsplash.com/photo-1771515411694-57fb626159d1?auto=format&fit=crop&w=600&q=80';
+const S2 = 'https://images.unsplash.com/photo-1600340565880-85967fe10fa7?auto=format&fit=crop&w=600&q=80';
+
+const PRODUCTS = [
+  {id:'p24', name:'Bracelet Doré', cat:'Bracelets', weight:'2.8g', price:1200, img:'1200dh.png', imgs:['1200dh.png',B1,B3],
+   desc:'Bracelet fin en or 18K maillons délicats. Un bijou quotidien plein de lumière.'},
+  {id:'p25', name:'Ensemble Royal', cat:'Ensembles', weight:'14.5g', price:12000, img:'12000dh.png', imgs:['12000dh.png',S1,S2],
+   desc:'Parure prestige or 18K : collier, bracelet et boucles d\'oreilles. L\'élégance suprême.'},
+  {id:'p26', name:'Bracelet Fleur', cat:'Bagues', weight:'3.6g', price:2200, img:'2200dh.png', imgs:['2200dh.png',R,R3],
+   desc:'Bague en or 18K motif fleur avec diamant central. Le romantisme à l\'état pur.'},
+  {id:'p1', name:'Bague Zahra', cat:'Bagues', weight:'2.4g', price:1450, img:R, imgs:[R,R2,R3],
+   desc:'Bague en or 18K ornée d\'un diamant taille brillant. Un classique intemporel pour celles qui aiment l\'élégance discrète.'},
+  {id:'p2', name:'Bracelet Yasmine', cat:'Bracelets', weight:'4.1g', price:2380, img:B1, imgs:[B1,B2,B3],
+   desc:'Bracelet gourmette en or 18K maillons fins. Délicat et raffiné, il sublime toutes les tenues.'},
+  {id:'p3', name:'Collier Nour', cat:'Colliers', weight:'5.8g', price:3620, img:C1, imgs:[C1,C2,C3],
+   desc:'Collier en or 18K avec pendentif orné de pierres précieuses. Une pièce unique qui illumine votre cou.'},
+  {id:'p4', name:'Boucles Layla', cat:'Boucles d\'oreilles', weight:'1.9g', price:1180, img:E1, imgs:[E1,E2,E3],
+   desc:'Boucles d\'oreilles créoles en or 18K. Chic et sophistiquées, elles habillent votre regard.'},
+  {id:'p5', name:'Ensemble Amira', cat:'Ensembles', weight:'7.3g', price:5240, img:S1, imgs:[S1,S2,C1],
+   desc:'Ensemble complet en or 18K : collier + boucles d\'oreilles assorties. La parure idéale pour les grandes occasions.'},
+  {id:'p6', name:'Bague Salma', cat:'Bagues', weight:'3.0g', price:1790, img:R2, imgs:[R2,R,R4],
+   desc:'Bague jumelle en or 18K avec deux diamants serti clos. L\'audace au bout des doigts.'},
+  {id:'p7', name:'Gourmette Rania', cat:'Bracelets', weight:'6.2g', price:3890, img:B2, imgs:[B2,B4,B5],
+   desc:'Gourmette large en or 18K maillons épais. Un bijou de caractère qui ne passe pas inaperçu.'},
+  {id:'p8', name:'Collier Malak', cat:'Colliers', weight:'4.5g', price:2760, img:C2, imgs:[C2,C1,C4],
+   desc:'Collier chaîne en or 18K avec pendentif en forme de goutte. La féminité incarnée.'},
+  {id:'p9', name:'Bague Lina', cat:'Bagues', weight:'3.2g', price:2100, img:R3, imgs:[R3,R5,R2],
+   desc:'Bague solitaire en or 18K avec diamant taille princesse. Pour un engagement ou un coup de cœur.'},
+  {id:'p10', name:'Bague Ines', cat:'Bagues', weight:'2.8g', price:1650, img:R4, imgs:[R4,R,R3],
+   desc:'Bague en or 18K diamants sur satin. Une pièce délicate qui capture la lumière.'},
+  {id:'p11', name:'Bague Nadia', cat:'Bagues', weight:'3.5g', price:1980, img:R5, imgs:[R5,R3,R4],
+   desc:'Bague en or 18K deux diamants sur tige fine. Le raffinement dans la simplicité.'},
+  {id:'p12', name:'Bracelet Hiba', cat:'Bracelets', weight:'5.0g', price:3150, img:B3, imgs:[B3,B1,B5],
+   desc:'Bracelet chaîne en or 18K maillons alternés. Un jeu de textures élégant au poignet.'},
+  {id:'p13', name:'Bracelet Meriem', cat:'Bracelets', weight:'3.8g', price:2450, img:B4, imgs:[B4,B2,B3],
+   desc:'Bracelet joncs en or 18K. La tradition marocaine revisitée avec modernité.'},
+  {id:'p14', name:'Bracelet Zineb', cat:'Bracelets', weight:'4.6g', price:2720, img:B5, imgs:[B5,B1,B4],
+   desc:'Bracelet perles en or 18K. L\'élégance intemporelle pour chaque instant.'},
+  {id:'p15', name:'Collier Sofia', cat:'Colliers', weight:'6.1g', price:4100, img:C3, imgs:[C3,C5,C2],
+   desc:'Collier pendentif cœur en or 18K. Pour déclarer votre flamme avec éclat.'},
+  {id:'p16', name:'Collier Aya', cat:'Colliers', weight:'5.5g', price:3350, img:C4, imgs:[C4,C1,C5],
+   desc:'Collier en or 18K avec pendentif pierre fine. Une touche de couleur et de lumière.'},
+  {id:'p17', name:'Collier Leila', cat:'Colliers', weight:'4.8g', price:2980, img:C5, imgs:[C5,C3,C4],
+   desc:'Collier pendentif en or 18K avec diamant. La pièce maîtresse de votre collection.'},
+  {id:'p18', name:'Boucles Sarah', cat:'Boucles d\'oreilles', weight:'2.2g', price:1350, img:E2, imgs:[E2,E1,E4],
+   desc:'Boucles d\'oreilles dormeuses en or 18K. Discrètes et lumineuses, pour un style épuré.'},
+  {id:'p19', name:'Boucles Houda', cat:'Boucles d\'oreilles', weight:'1.7g', price:1080, img:E3, imgs:[E3,E2,E1],
+   desc:'Boucles d\'oreilles puces en or 18K. L\'indispensable du quotidien.'},
+  {id:'p20', name:'Boucles Amal', cat:'Boucles d\'oreilles', weight:'2.0g', price:1250, img:E4, imgs:[E4,E1,E3],
+   desc:'Boucles d\'oreilles pendantes en or 18K. Elles habillent votre visage de lumière.'},
+  {id:'p21', name:'Ensemble Samia', cat:'Ensembles', weight:'8.5g', price:6100, img:S1, imgs:[S1,S2,C3],
+   desc:'Parure complète or 18K : collier pendentif + boucles. Pour un look harmonieux et luxueux.'},
+  {id:'p22', name:'Ensemble Fatima', cat:'Ensembles', weight:'6.8g', price:4850, img:S2, imgs:[S2,S1,C1],
+   desc:'Ensemble or 18K collier + bracelet assortis. La coordination parfaite.'},
+  {id:'p23', name:'Ensemble Yousra', cat:'Ensembles', weight:'9.2g', price:6700, img:C2, imgs:[C2,S1,S2],
+   desc:'Grand ensemble or 18K : collier, bracelet et boucles d\'oreilles. Le luxe dans son intégralité.'},
+];
+
+/* =============== FILTER & RENDER =============== */
+let activeFilter = 'all';
+const grid = document.getElementById('prodGrid');
+const filterBar = document.getElementById('filterBar');
+const collectionTitle = document.getElementById('collectionTitle');
+const collectionSub = document.getElementById('collectionSub');
+
+const catLabels = {
+  'all':'Tout',
+  'Bagues':'Bagues',
+  'Bracelets':'Bracelets',
+  'Colliers':'Colliers',
+  "Boucles d'oreilles":'Boucles',
+  'Ensembles':'Ensembles'
+};
+
+function buildFilterBar(){
+  const cats = ['all', ...new Set(PRODUCTS.map(p=>p.cat))];
+  filterBar.innerHTML = cats.map(c=>{
+    const count = c==='all' ? PRODUCTS.length : PRODUCTS.filter(p=>p.cat===c).length;
+    return `<button class="filter-btn${c===activeFilter?' active':''}" data-cat="${c}">${catLabels[c]||c} <span class="count">(${count})</span></button>`;
+  }).join('');
+}
+
+function renderProducts(cat='all'){
+  activeFilter = cat;
+  const filtered = cat==='all' ? PRODUCTS : PRODUCTS.filter(p=>p.cat===cat);
+
+  if(cat==='all'){
+    collectionTitle.textContent = 'La collection';
+    collectionSub.textContent = 'Chaque pièce est pesée et poinçonnée 18K avant de vous être livrée.';
+  } else {
+    collectionTitle.textContent = catLabels[cat]||cat;
+    collectionSub.textContent = `Découvrez tous nos ${catLabels[cat]?.toLowerCase()||cat} en or 18K. ${filtered.length} pièce${filtered.length>1?'s':''} disponible${filtered.length>1?'s':''}.`;
+  }
+
+  grid.innerHTML = '';
+  filtered.forEach(p=>{
+    const card = document.createElement('div');
+    card.className = 'prod-card reveal';
+    card.innerHTML = `
+      <div class="prod-media" data-tilt>
+        <span class="karat-badge">18K</span>
+        <span class="weight-badge">${p.weight}</span>
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        <div class="shine"></div>
+      </div>
+      <div class="prod-info">
+        <span class="cat">${p.cat}</span>
+        <h4>${p.name}</h4>
+        <div class="prod-bottom">
+          <span class="price">${p.price.toLocaleString('fr-FR')} MAD</span>
+          <button class="add-btn" data-id="${p.id}">Ajouter</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+    card.addEventListener('click', e=>{
+      if(e.target.closest('.add-btn')) return;
+      openDetail(p.id);
+    });
+  });
+
+  buildFilterBar();
+  setTimeout(()=>{
+    document.querySelectorAll('.prod-card.reveal').forEach(el=>io.observe(el));
+  }, 50);
+}
+
+renderProducts('all');
+
+filterBar.addEventListener('click', e=>{
+  const btn = e.target.closest('.filter-btn');
+  if(!btn) return;
+  const cat = btn.dataset.cat;
+  document.getElementById('collection').scrollIntoView({behavior:'smooth', block:'start'});
+  setTimeout(()=>renderProducts(cat), 300);
+});
+
+document.querySelectorAll('.cat-card[data-cat]').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    const cat = el.dataset.cat;
+    document.getElementById('collection').scrollIntoView({behavior:'smooth', block:'start'});
+    setTimeout(()=>renderProducts(cat), 300);
+  });
+});
+
+/* =============== INSTAGRAM GRID =============== */
+const instaGrid = document.getElementById('instaGrid');
+const instaImgs = [
+  'https://images.unsplash.com/photo-1611955167811-4711904bb9f8?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1632525230528-ec17c49bc168?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1708222169914-5df08ce21ee5?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1680789527299-dbf53044f48b?auto=format&fit=crop&w=400&q=80'
+];
+instaImgs.forEach(src=>{
+  const t = document.createElement('a');
+  t.href = 'https://www.instagram.com/bijouterie.walae/';
+  t.target = '_blank'; t.rel='noopener';
+  t.className = 'insta-tile';
+  t.innerHTML = `
+    <img src="${src}" alt="Bijouterie Wala'e Instagram" loading="lazy">
+    <div class="insta-overlay">
+      <svg class="insta-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8">
+        <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.2" fill="white"/>
+      </svg>
+    </div>`;
+  instaGrid.appendChild(t);
+});
+
+/* =============== CART =============== */
+let cart = {};
+const cartCountEl = document.getElementById('cartCount');
+const drawerItems = document.getElementById('drawerItems');
+const subtotalEl = document.getElementById('subtotal');
+const waCheckout = document.getElementById('waCheckout');
+
+function burstParticles(x,y){
+  const colors = ['#d4af37','#f0d68a','#ffdf73','#fff8dc'];
+  for(let i=0;i<18;i++){
+    const p = document.createElement('div');
+    const size = 4+Math.random()*8;
+    const angle = Math.random()*Math.PI*2;
+    const dist = 40+Math.random()*100;
+    const dx = Math.cos(angle)*dist;
+    const dy = Math.sin(angle)*dist;
+    const rot = Math.random()*720;
+    p.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:${size}px;height:${size}px;border-radius:${Math.random()>.5?'50%':'2px'};background:${colors[Math.floor(Math.random()*colors.length)]};pointer-events:none;z-index:999;opacity:1;transition:all .8s cubic-bezier(.2,.8,.2,1);`;
+    document.body.appendChild(p);
+    requestAnimationFrame(()=>{
+      p.style.transform = `translate(${dx}px,${dy}px) rotate(${rot}deg) scale(.2)`;
+      p.style.opacity = '0';
+    });
+    setTimeout(()=> p.remove(), 900);
+  }
+}
+function addToCart(id){
+  cart[id] = (cart[id]||0)+1;
+  renderCart();
+  burstParticles(innerWidth/2, innerHeight-60);
+}
+function changeQty(id, delta){
+  cart[id] = (cart[id]||0)+delta;
+  if(cart[id] <= 0) delete cart[id];
+  renderCart();
+}
+function removeItem(id){
+  delete cart[id];
+  renderCart();
+}
+function renderCart(){
+  const ids = Object.keys(cart);
+  const totalItems = ids.reduce((s,id)=>s+cart[id],0);
+  cartCountEl.textContent = totalItems;
+  cartCountEl.classList.toggle('show', totalItems>0);
+
+  if(ids.length===0){
+    drawerItems.innerHTML = `<div class="empty-cart">Votre panier est vide.<br>Ajoutez une pièce de la collection.</div>`;
+  } else {
+    drawerItems.innerHTML = ids.map(id=>{
+      const p = PRODUCTS.find(x=>x.id===id);
+      return `<div class="cart-line">
+        <div class="thumb"><img src="${p.img}" alt="${p.name}"></div>
+        <div class="info">
+          <h5>${p.name}</h5>
+          <div class="p">${(p.price*cart[id]).toLocaleString('fr-FR')} MAD</div>
+          <div class="qty-ctrl">
+            <button onclick="changeQty('${id}',-1)">−</button>
+            <span>${cart[id]}</span>
+            <button onclick="changeQty('${id}',1)">+</button>
+          </div>
+          <div class="remove-line" onclick="removeItem('${id}')">Retirer</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const subtotal = ids.reduce((s,id)=>s + PRODUCTS.find(x=>x.id===id).price*cart[id], 0);
+  subtotalEl.textContent = subtotal.toLocaleString('fr-FR') + ' MAD';
+
+  let msg = 'Bonjour, je souhaite commander : ';
+  msg += ids.map(id=>{
+    const p = PRODUCTS.find(x=>x.id===id);
+    return `${p.name} x${cart[id]}`;
+  }).join(', ');
+  msg += ids.length ? ` — Total estimé : ${subtotal.toLocaleString('fr-FR')} MAD.` : '';
+  waCheckout.href = 'https://wa.me/212539341954?text=' + encodeURIComponent(msg);
+}
+renderCart();
+
+document.addEventListener('click', e=>{
+  if(e.target.matches('.add-btn')){
+    addToCart(e.target.dataset.id);
+    e.target.classList.add('added');
+    e.target.textContent = 'Ajouté ✓';
+    setTimeout(()=>{ e.target.classList.remove('added'); e.target.textContent='Ajouter'; }, 1200);
+    openDrawer();
+  }
+});
+
+/* =============== DRAWER =============== */
+const overlay = document.getElementById('overlay');
+const drawer = document.getElementById('drawer');
+function openDrawer(){ overlay.classList.add('open'); drawer.classList.add('open'); }
+function closeDrawer(){ overlay.classList.remove('open'); drawer.classList.remove('open'); }
+document.getElementById('cartBtn').addEventListener('click', openDrawer);
+document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
+overlay.addEventListener('click', closeDrawer);
+
+/* =============== HEADER SCROLL =============== */
+const header = document.getElementById('siteHeader');
+window.addEventListener('scroll', ()=>{
+  header.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+/* =============== REVEAL =============== */
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+  });
+}, {threshold:.12});
+document.querySelectorAll('.reveal, .reveal-scale').forEach(el=>io.observe(el));
+
+/* =============== 3D TILT =============== */
+document.querySelectorAll('.prod-media[data-tilt]').forEach(el=>{
+  el.addEventListener('mousemove', e=>{
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width/2, cy = rect.height/2;
+    const rotateX = ((y - cy) / cy) * -10;
+    const rotateY = ((x - cx) / cx) * 10;
+    el.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05) translateZ(10px)`;
+    el.style.transition = 'transform .06s linear';
+    
+    const shine = el.querySelector('.shine');
+    if(shine){
+      const pctX = (x / rect.width) * 100;
+      const pctY = (y / rect.height) * 100;
+      shine.style.background = `radial-gradient(circle at ${pctX}% ${pctY}%, rgba(243,220,154,0.18) 0%, transparent 65%)`;
+      shine.style.transition = 'none';
+    }
+  });
+  el.addEventListener('mouseleave', ()=>{
+    el.style.transform = 'perspective(600px) rotateX(0) rotateY(0) scale(1) translateZ(0)';
+    el.style.transition = 'transform .5s ease';
+    
+    const shine = el.querySelector('.shine');
+    if(shine){
+      shine.style.background = 'linear-gradient(100deg, transparent, rgba(243,220,154,.12), transparent)';
+      shine.style.transition = 'background .5s ease';
+    }
+  });
+});
+
+/* =============== COUNTER ANIMATION =============== */
+const bigStat = document.querySelector('.big-stat');
+const counterObserver = new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){
+      const target = 81400;
+      const duration = 2000;
+      const start = performance.now();
+      function update(now){
+        const pct = Math.min((now-start)/duration, 1);
+        const eased = 1-Math.pow(1-pct,3);
+        bigStat.textContent = Math.floor(eased*target).toLocaleString('fr-FR') + '+';
+        if(pct<1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+      counterObserver.unobserve(en.target);
+    }
+  });
+}, {threshold:.5});
+counterObserver.observe(bigStat);
+
+/* =============== CHECKOUT FORM =============== */
+const formOverlay = document.getElementById('formOverlay');
+const formClose = document.getElementById('formClose');
+const formCheckoutBtn = document.getElementById('formCheckoutBtn');
+const formSubmit = document.getElementById('formSubmit');
+const formWaBtn = document.getElementById('formWaBtn');
+const formContent = document.getElementById('formContent');
+const formSuccess = document.getElementById('formSuccess');
+const formSuccessClose = document.getElementById('formSuccessClose');
+
+function openForm(){
+  formOverlay.classList.add('open');
+  formContent.style.display = 'block';
+  formSuccess.style.display = 'none';
+}
+function closeForm(){ formOverlay.classList.remove('open'); }
+
+formCheckoutBtn.addEventListener('click', ()=>{
+  if(Object.keys(cart).length === 0) return;
+  openForm();
+});
+
+formClose.addEventListener('click', closeForm);
+formOverlay.addEventListener('click', e=>{ if(e.target===formOverlay) closeForm(); });
+formSuccessClose.addEventListener('click', closeForm);
+
+function getCartSummary(){
+  const ids = Object.keys(cart);
+  return ids.map(id=>{
+    const p = PRODUCTS.find(x=>x.id===id);
+    return `${p.name} x${cart[id]} — ${(p.price*cart[id]).toLocaleString('fr-FR')} MAD`;
+  }).join('\n');
+}
+
+function getTotalFormatted(){
+  const ids = Object.keys(cart);
+  return ids.reduce((s,id)=>s + PRODUCTS.find(x=>x.id===id).price*cart[id], 0).toLocaleString('fr-FR') + ' MAD';
+}
+
+formSubmit.addEventListener('click', ()=>{
+  const prenom = document.getElementById('fPrenom').value.trim();
+  const nom = document.getElementById('fNom').value.trim();
+  const tel = document.getElementById('fTel').value.trim();
+  const ville = document.getElementById('fVille').value.trim();
+  const adresse = document.getElementById('fAdresse').value.trim();
+  const notes = document.getElementById('fNotes').value.trim();
+
+  if(!prenom || !nom || !tel || !ville || !adresse){
+    const fields = [
+      {v:prenom, el:document.getElementById('fPrenom')},
+      {v:nom, el:document.getElementById('fNom')},
+      {v:tel, el:document.getElementById('fTel')},
+      {v:ville, el:document.getElementById('fVille')},
+      {v:adresse, el:document.getElementById('fAdresse')}
+    ];
+    fields.forEach(f=>{
+      if(!f.v) f.el.style.borderColor = 'var(--garnet-bright)';
+      else f.el.style.borderColor = '';
+    });
+    setTimeout(()=> fields.forEach(f=>{ f.el.style.borderColor = ''; }), 2000);
+    return;
+  }
+
+  const msg = `🛍 *NOUVELLE COMMANDE WALAE*\n\n`+
+    `👤 *Client :* ${prenom} ${nom}\n`+
+    `📞 *Téléphone :* ${tel}\n`+
+    `📍 *Ville :* ${ville}\n`+
+    `🏠 *Adresse :* ${adresse}\n`+
+    `${notes ? `📝 *Notes :* ${notes}\n` : ''}`+
+    `━━━━━━━━━━━━━━━\n`+
+    `*ARTICLES :*\n${getCartSummary()}\n\n`+
+    `*Total :* ${getTotalFormatted()}`;
+
+  formContent.style.display = 'none';
+  formSuccess.style.display = 'block';
+
+  window.open('https://wa.me/212539341954?text=' + encodeURIComponent(msg), '_blank');
+});
+
+formWaBtn.addEventListener('click', (e)=>{
+  e.preventDefault();
+  const ids = Object.keys(cart);
+  if(!ids.length) return;
+  let msg = 'Bonjour, je souhaite commander :\n';
+  msg += ids.map(id=>{
+    const p = PRODUCTS.find(x=>x.id===id);
+    return `${p.name} x${cart[id]}`;
+  }).join(', ');
+  msg += `\nTotal : ${getTotalFormatted()}`;
+  window.open('https://wa.me/212539341954?text=' + encodeURIComponent(msg), '_blank');
+  closeForm();
+});
+
+/* =============== PRODUCT DETAIL MODAL =============== */
+const detailOverlay = document.createElement('div');
+detailOverlay.className = 'detail-overlay';
+detailOverlay.innerHTML = `
+  <div class="detail-modal">
+    <div class="detail-close" id="detailClose"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M6 6l12 12M18 6L6 18"/></svg></div>
+    <div class="detail-gallery" id="detailGallery">
+      <img class="main-img" id="detailMainImg" src="" alt="">
+      <button class="detail-nav-btn detail-nav-prev" id="detailPrev">‹</button>
+      <button class="detail-nav-btn detail-nav-next" id="detailNext">›</button>
+      <div class="detail-thumbs" id="detailThumbs"></div>
+    </div>
+    <div class="detail-info" id="detailInfo">
+      <span class="eyebrow" id="detailCat"></span>
+      <h2 id="detailName"></h2>
+      <div class="detail-price" id="detailPrice"></div>
+      <div class="detail-weight" id="detailWeight"></div>
+      <div class="detail-desc" id="detailDesc"></div>
+      <div class="detail-actions">
+        <button class="btn btn-gold" id="detailAddBtn">Ajouter au panier <span class="btn-shine"></span></button>
+        <a href="#" class="btn btn-outline" id="detailWABtn" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+  </div>`;
+document.body.appendChild(detailOverlay);
+
+let detailProduct = null;
+let detailImgIndex = 0;
+
+function openDetail(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  detailProduct = p;
+  detailImgIndex = 0;
+  updateDetailView();
+  detailOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function updateDetailView(){
+  if(!detailProduct) return;
+  const p = detailProduct;
+  const imgs = p.imgs || [p.img];
+
+  document.getElementById('detailCat').textContent = p.cat;
+  document.getElementById('detailName').textContent = p.name;
+  document.getElementById('detailPrice').textContent = p.price.toLocaleString('fr-FR') + ' MAD';
+  document.getElementById('detailWeight').textContent = 'Poids : ' + p.weight + ' · Or 18K certifié';
+  document.getElementById('detailDesc').textContent = p.desc;
+
+  const mainImg = document.getElementById('detailMainImg');
+  mainImg.src = imgs[detailImgIndex];
+  mainImg.alt = p.name;
+
+  const thumbsEl = document.getElementById('detailThumbs');
+  thumbsEl.innerHTML = imgs.map((src,i)=>{
+    const activeClass = i===detailImgIndex ? ' active' : '';
+    return `<button class="${activeClass}" data-idx="${i}"><img src="${src}" alt=""></button>`;
+  }).join('');
+
+  thumbsEl.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      detailImgIndex = parseInt(btn.dataset.idx);
+      updateDetailView();
+    });
+  });
+
+  const msg = `Bonjour, je suis int\u00e9ress\u00e9 par "${p.name}" (${p.price.toLocaleString('fr-FR')} MAD) — ${p.cat} — WALAE Bijouterie.`;
+  document.getElementById('detailWABtn').href = 'https://wa.me/212539341954?text=' + encodeURIComponent(msg);
+
+  const addBtn = document.getElementById('detailAddBtn');
+  addBtn.textContent = 'Ajouter au panier';
+  addBtn.className = 'btn btn-gold';
+  addBtn.onclick = ()=>{
+    addToCart(p.id);
+    addBtn.textContent = 'Ajout\u00e9 \u2713';
+    addBtn.style.background = 'var(--garnet-bright)';
+    setTimeout(()=>{ addBtn.style.background = ''; addBtn.textContent = 'Ajouter au panier'; }, 1200);
+  };
+}
+
+document.getElementById('detailClose').addEventListener('click', ()=>{
+  detailOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+});
+detailOverlay.addEventListener('click', e=>{
+  if(e.target===detailOverlay){
+    detailOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+});
+
+document.getElementById('detailPrev').addEventListener('click', ()=>{
+  if(!detailProduct) return;
+  const imgs = detailProduct.imgs || [detailProduct.img];
+  detailImgIndex = (detailImgIndex - 1 + imgs.length) % imgs.length;
+  updateDetailView();
+});
+
+document.getElementById('detailNext').addEventListener('click', ()=>{
+  if(!detailProduct) return;
+  const imgs = detailProduct.imgs || [detailProduct.img];
+  detailImgIndex = (detailImgIndex + 1) % imgs.length;
+  updateDetailView();
+});
+
+document.addEventListener('keydown', e=>{
+  if(!detailOverlay.classList.contains('open')) return;
+  if(e.key === 'Escape'){
+    detailOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  if(e.key === 'ArrowLeft') document.getElementById('detailPrev').click();
+  if(e.key === 'ArrowRight') document.getElementById('detailNext').click();
+});
+
+/* =============== 3D SPOTLIGHT GLOW =============== */
+const spotlight = document.createElement('div');
+spotlight.style.cssText = 'position:fixed;pointer-events:none;z-index:1;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(201,161,92,.06),transparent 70%);transform:translate(-50%,-50%);transition:left .15s ease,top .15s ease;';
+document.body.appendChild(spotlight);
+document.addEventListener('mousemove', e=>{
+  spotlight.style.left = e.clientX + 'px';
+  spotlight.style.top = e.clientY + 'px';
+});
+
+/* =============== 3D HERO INTERACTIVE GEMSTONE =============== */
+(function() {
+  if (typeof THREE === 'undefined') return;
+  const container = document.querySelector('.hero-art');
+  const canvas = document.getElementById('hero-3d-canvas');
+  if (!canvas || !container) return;
+
+  const scene = new THREE.Scene();
+
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+  camera.position.z = 6;
+
+  const renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    alpha: true,
+    antialias: true
+  });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  // Diamond Geometry (Brilliant Cut)
+  const gemGeometry = new THREE.BufferGeometry();
+  
+  const radiusTable = 0.5;
+  const radiusGirdle = 1.0;
+  const yTable = 0.5;
+  const yGirdle = 0.15;
+  const yCulet = -0.9;
+  
+  const vertices = [
+    0, yTable, 0
+  ];
+  
+  for (let i = 0; i < 8; i++) {
+    const angle = (i / 8) * Math.PI * 2;
+    vertices.push(Math.cos(angle) * radiusTable, yTable, Math.sin(angle) * radiusTable);
+  }
+  
+  for (let i = 0; i < 8; i++) {
+    const angle = (i / 8) * Math.PI * 2;
+    vertices.push(Math.cos(angle) * radiusGirdle, yGirdle, Math.sin(angle) * radiusGirdle);
+  }
+  
+  vertices.push(0, yCulet, 0);
+  
+  const verticesF32 = new Float32Array(vertices);
+  const indices = [];
+  
+  for (let i = 0; i < 8; i++) {
+    const next = (i + 1) % 8;
+    indices.push(0, i + 1, next + 1);
+  }
+  
+  for (let i = 0; i < 8; i++) {
+    const next = (i + 1) % 8;
+    const t1 = i + 1;
+    const t2 = next + 1;
+    const g1 = i + 9;
+    const g2 = next + 9;
+    
+    indices.push(t1, g1, g2);
+    indices.push(t1, g2, t2);
+  }
+  
+  for (let i = 0; i < 8; i++) {
+    const next = (i + 1) % 8;
+    const g1 = i + 9;
+    const g2 = next + 9;
+    indices.push(g1, 17, g2);
+  }
+  
+  gemGeometry.setAttribute('position', new THREE.BufferAttribute(verticesF32, 3));
+  gemGeometry.setIndex(indices);
+  gemGeometry.computeVertexNormals();
+
+  const gemMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff,
+    roughness: 0.03,
+    metalness: 0.05,
+    transmission: 0.95,
+    ior: 2.417,
+    thickness: 1.8,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.05,
+    side: THREE.DoubleSide,
+    flatShading: true
+  });
+  
+  const ringGeometry = new THREE.TorusGeometry(0.18, 0.03, 8, 24);
+  const goldMaterial = new THREE.MeshStandardMaterial({
+    color: 0xd4af37,
+    metalness: 0.9,
+    roughness: 0.15
+  });
+  
+  const gemMesh = new THREE.Mesh(gemGeometry, gemMaterial);
+  const hangerMesh = new THREE.Mesh(ringGeometry, goldMaterial);
+  hangerMesh.position.y = 0.65;
+  hangerMesh.rotation.x = Math.PI / 2;
+  
+  const pendantGroup = new THREE.Group();
+  pendantGroup.add(gemMesh);
+  pendantGroup.add(hangerMesh);
+  scene.add(pendantGroup);
+
+  const particleCount = 25;
+  const particleGeometry = new THREE.BufferGeometry();
+  const particlePositions = new Float32Array(particleCount * 3);
+  const particleSpeeds = [];
+  
+  for (let i = 0; i < particleCount; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos((Math.random() * 2) - 1);
+    const r = 1.5 + Math.random() * 1.5;
+    
+    particlePositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+    particlePositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+    particlePositions[i * 3 + 2] = r * Math.cos(phi);
+    
+    particleSpeeds.push({
+      x: (Math.random() - 0.5) * 0.005,
+      y: (Math.random() - 0.5) * 0.005 + 0.002,
+      z: (Math.random() - 0.5) * 0.005,
+      rLimit: 3.0
+    });
+  }
+  
+  particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+  
+  const pMaterial = new THREE.PointsMaterial({
+    color: 0xf3dc9a,
+    size: 0.06,
+    transparent: true,
+    opacity: 0.8,
+    blending: THREE.AdditiveBlending
+  });
+  
+  const particleSystem = new THREE.Points(particleGeometry, pMaterial);
+  scene.add(particleSystem);
+
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+  scene.add(ambientLight);
+
+  const lightGold = new THREE.SpotLight(0xffdf7a, 12, 12, Math.PI/4, 0.5, 1);
+  lightGold.position.set(3, 4, 3);
+  scene.add(lightGold);
+
+  const lightWhite = new THREE.DirectionalLight(0xddeeff, 5);
+  lightWhite.position.set(-3, 2, 4);
+  scene.add(lightWhite);
+
+  const lightGarnet = new THREE.PointLight(0xa53344, 4, 8);
+  lightGarnet.position.set(0, -2, -2);
+  scene.add(lightGarnet);
+
+  let isDragging = false;
+  let previousMousePosition = { x: 0, y: 0 };
+  let rotationVelocity = { x: 0.005, y: 0.008 };
+  let mouseTiltX = 0, mouseTiltY = 0;
+
+  function resize() {
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    const size = Math.min(width, height, 500);
+    renderer.setSize(size, size);
+    camera.aspect = 1;
+    camera.updateProjectionMatrix();
+  }
+  
+  resize();
+  window.addEventListener('resize', resize);
+
+  container.addEventListener('mousemove', (e) => {
+    const rect = container.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    mouseTiltX = (y / (rect.height / 2)) * 0.25;
+    mouseTiltY = (x / (rect.width / 2)) * 0.25;
+  });
+
+  container.addEventListener('mouseleave', () => {
+    mouseTiltX = 0;
+    mouseTiltY = 0;
+  });
+
+  canvas.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    previousMousePosition = { x: e.clientX, y: e.clientY };
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const deltaMove = {
+      x: e.clientX - previousMousePosition.x,
+      y: e.clientY - previousMousePosition.y
+    };
+    
+    pendantGroup.rotation.y += deltaMove.x * 0.008;
+    pendantGroup.rotation.x += deltaMove.y * 0.008;
+    rotationVelocity.y = deltaMove.x * 0.008;
+    rotationVelocity.x = deltaMove.y * 0.008;
+    previousMousePosition = { x: e.clientX, y: e.clientY };
+  });
+
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+
+  canvas.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    const touch = e.touches[0];
+    previousMousePosition = { x: touch.clientX, y: touch.clientY };
+  }, { passive: true });
+
+  canvas.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    const deltaMove = {
+      x: touch.clientX - previousMousePosition.x,
+      y: touch.clientY - previousMousePosition.y
+    };
+    
+    pendantGroup.rotation.y += deltaMove.x * 0.008;
+    pendantGroup.rotation.x += deltaMove.y * 0.008;
+    rotationVelocity.y = deltaMove.x * 0.008;
+    rotationVelocity.x = deltaMove.y * 0.008;
+    previousMousePosition = { x: touch.clientX, y: touch.clientY };
+  }, { passive: true });
+
+  window.addEventListener('touchend', () => {
+    isDragging = false;
+  });
+
+  let time = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    time += 0.005;
+
+    if (!isDragging) {
+      pendantGroup.rotation.y += rotationVelocity.y;
+      pendantGroup.rotation.x += rotationVelocity.x;
+      rotationVelocity.y += (0.004 - rotationVelocity.y) * 0.03;
+      rotationVelocity.x += (0.002 - rotationVelocity.x) * 0.03;
+      pendantGroup.rotation.x += (mouseTiltX - (pendantGroup.rotation.x - Math.floor(pendantGroup.rotation.x / (Math.PI*2)) * (Math.PI*2))) * 0.05;
+      pendantGroup.rotation.y += mouseTiltY * 0.05;
+    }
+
+    pendantGroup.position.y = Math.sin(time * 2) * 0.15;
+    lightGold.position.x = 3 + Math.cos(time) * 1.5;
+    lightGold.position.z = 3 + Math.sin(time) * 1.5;
+
+    const posAttr = particleGeometry.attributes.position;
+    for (let i = 0; i < particleCount; i++) {
+      let px = posAttr.getX(i);
+      let py = posAttr.getY(i);
+      let pz = posAttr.getZ(i);
+      
+      const speed = particleSpeeds[i];
+      px += speed.x + Math.sin(time + i) * 0.002;
+      py += speed.y;
+      pz += speed.z;
+      
+      const dist = Math.sqrt(px*px + py*py + pz*pz);
+      if (dist > speed.rLimit || py > 2.0) {
+        const theta = Math.random() * Math.PI * 2;
+        px = Math.cos(theta) * (0.5 + Math.random() * 0.8);
+        py = -1.5;
+        pz = Math.sin(theta) * (0.5 + Math.random() * 0.8);
+      }
+      
+      posAttr.setXYZ(i, px, py, pz);
+    }
+    posAttr.needsUpdate = true;
+
+    renderer.render(scene, camera);
+  }
+
+  animate();
+})();
+
+</script>
+</body>
+</html>
