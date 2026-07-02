@@ -63,9 +63,6 @@
   @keyframes typeBlink{50%{border-color:var(--gold);}}
   @media (min-width:981px){.typewriter{border-right-color:transparent!important;}}
 
-  /* ===== 3D BACKGROUND RINGS ===== */
-  #bg3d-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;}
-
   /* ===== SPARKLE CURSOR ===== */
   #sparkle-canvas{position:fixed;inset:0;pointer-events:none;z-index:999;}
 
@@ -162,7 +159,7 @@
   .hero-bg img{
     width:100%;height:100%;object-fit:cover;
     transform:scale(1);
-    transition:transform .1s linear;
+    transition:transform .1s linear, opacity .8s ease;
     animation:kenBurns 12s ease-in-out infinite alternate;
   }
   @keyframes kenBurns{
@@ -172,8 +169,8 @@
   .hero-bg .overlay{
     position:absolute;inset:0;
     background:
-      linear-gradient(to bottom, rgba(10,9,6,.7) 0%, rgba(10,9,6,.45) 50%, rgba(10,9,6,.85) 100%),
-      radial-gradient(ellipse 70% 60% at 50% 40%, rgba(201,161,92,.12), transparent 70%);
+      linear-gradient(to bottom, rgba(10,9,6,.85) 0%, rgba(10,9,6,.6) 40%, rgba(10,9,6,.75) 70%, rgba(10,9,6,.92) 100%),
+      radial-gradient(ellipse 70% 60% at 50% 40%, rgba(201,161,92,.08), transparent 70%);
   }
   .hero-bg .glow{
     position:absolute;top:-20%;left:-10%;width:120%;height:80%;
@@ -828,7 +825,6 @@
 <body>
 
 <div class="grain"></div>
-<canvas id="bg3d-canvas"></canvas>
 <canvas id="ambient-canvas"></canvas>
 <canvas id="sparkle-canvas"></canvas>
 <canvas id="constellation-canvas"></canvas>
@@ -883,7 +879,7 @@
 <!-- ================= HERO ================= -->
 <section class="hero" id="hero">
   <div class="hero-bg">
-    <img src="hero-3d.png" alt="Collier en or Wala'e" id="heroImg">
+    <img src="hero-3d-clean.png" alt="Collier en or Wala'e" id="heroImg">
     <div class="overlay"></div>
     <div class="glow"></div>
   </div>
@@ -907,7 +903,7 @@
       </div>
     </div>
     <div class="scroll-indicator">
-      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
       <span>Défiler</span>
     </div>
 </section>
@@ -1183,87 +1179,6 @@
 </div>
 
 <script>
-/* =============== 3D BACKGROUND RINGS =============== */
-const bgCanvas = document.getElementById('bg3d-canvas');
-const bgCtx = bgCanvas.getContext('2d');
-let bgW, bgH;
-function resizeBg(){
-  bgW = bgCanvas.width = window.innerWidth;
-  bgH = bgCanvas.height = window.innerHeight;
-}
-resizeBg();
-window.addEventListener('resize', resizeBg);
-
-let mouseX = -1000, mouseY = -1000;
-
-class Ring3D {
-  constructor(){
-    this.reset();
-  }
-  reset(){
-    this.radius = 40 + Math.random() * 120;
-    this.x = Math.random() * bgW;
-    this.y = Math.random() * bgH;
-    this.z = Math.random() * 600 - 300;
-    this.rotX = Math.random() * Math.PI * 2;
-    this.rotY = Math.random() * Math.PI * 2;
-    this.rotZ = Math.random() * Math.PI * 2;
-    this.speedX = (Math.random() - 0.5) * 0.02;
-    this.speedY = (Math.random() - 0.5) * 0.02;
-    this.speedZ = (Math.random() - 0.5) * 0.02;
-    this.thickness = 1 + Math.random() * 2;
-    this.opacity = 0.03 + Math.random() * 0.06;
-  }
-  update(){
-    this.rotX += this.speedX;
-    this.rotY += this.speedY;
-    this.rotZ += this.speedZ;
-    if(this.x < -200) this.x = bgW + 200;
-    if(this.x > bgW + 200) this.x = -200;
-    if(this.y < -200) this.y = bgH + 200;
-    if(this.y > bgH + 200) this.y = -200;
-  }
-  draw(ctx){
-    const perspective = 800;
-    const scale = perspective / (perspective + this.z);
-    const cx = this.x + (mouseX - this.x) * 0.01;
-    const cy = this.y + (mouseY - this.y) * 0.01;
-
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.scale(scale, scale);
-    ctx.rotate(this.rotZ);
-    ctx.globalAlpha = this.opacity * (0.5 + scale * 0.5);
-    ctx.strokeStyle = '#c9a15c';
-    ctx.lineWidth = this.thickness;
-    ctx.beginPath();
-
-    const pts = 40;
-    for(let i=0; i<=pts; i++){
-      const theta = (i/pts) * Math.PI * 2;
-      const x = Math.cos(theta) * this.radius;
-      const y = Math.sin(theta) * this.radius;
-      const rX = x * Math.cos(this.rotX) - y * Math.sin(this.rotX);
-      const rY = x * Math.sin(this.rotX) * Math.sin(this.rotY) + y * Math.cos(this.rotX);
-      const rZ = x * Math.sin(this.rotX) * Math.cos(this.rotY) + y * Math.cos(this.rotX) * Math.sin(this.rotY);
-      if(i===0) ctx.moveTo(rX, rY);
-      else ctx.lineTo(rX, rY);
-    }
-    ctx.stroke();
-    ctx.restore();
-  }
-}
-
-const rings = [];
-for(let i=0; i<8; i++) rings.push(new Ring3D());
-
-function animateBg(){
-  bgCtx.clearRect(0,0,bgW,bgH);
-  rings.forEach(r=>{ r.update(); r.draw(bgCtx); });
-  requestAnimationFrame(animateBg);
-}
-animateBg();
-
 /* =============== AMBIENT GOLD DUST =============== */
 const ambCanvas = document.getElementById('ambient-canvas');
 const ambCtx = ambCanvas.getContext('2d');
@@ -1306,6 +1221,8 @@ function animateDust(){
   requestAnimationFrame(animateDust);
 }
 animateDust();
+
+let mouseX = -1000, mouseY = -1000;
 
 /* =============== SPARKLE CURSOR =============== */
 const spCanvas = document.getElementById('sparkle-canvas');
@@ -1506,6 +1423,22 @@ window.addEventListener('deviceorientation', e=>{
     heroImg.style.transform = `scale(1.06) translateY(${scrollOffset}px) translate(${tiltX}px,${tiltY}px)`;
   }
   requestAnimationFrame(heroTilt);
+})();
+
+/* =============== HERO IMAGE SWAP =============== */
+(function(){
+  const imgClean = new Image();
+  imgClean.src = 'hero-3d-clean.png';
+  setTimeout(() => {
+    const hImg = document.getElementById('heroImg');
+    if(hImg && hImg.src.indexOf('hero-3d-clean') === -1){
+      hImg.style.opacity = '0';
+      setTimeout(() => {
+        hImg.src = 'hero-3d-clean.png';
+        hImg.style.opacity = '1';
+      }, 500);
+    }
+  }, 1000);
 })();
 
 /* =============== DATA =============== */
