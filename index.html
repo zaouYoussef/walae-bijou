@@ -1424,20 +1424,21 @@ window.addEventListener('deviceorientation', e=>{
   requestAnimationFrame(heroTilt);
 })();
 
-/* =============== HERO IMAGE SWAP =============== */
+/* =============== HERO IMAGE LOOP =============== */
 (function(){
-  const imgClean = new Image();
-  imgClean.src = 'hero-3d-clean.png';
-  setTimeout(() => {
-    const hImg = document.getElementById('heroImg');
-    if(hImg && hImg.src.indexOf('hero-3d-clean') === -1){
-      hImg.style.opacity = '0';
-      setTimeout(() => {
-        hImg.src = 'hero-3d-clean.png';
-        hImg.style.opacity = '1';
-      }, 500);
-    }
-  }, 1000);
+  const imgs = ['hero-3d.png','hero-3d-clean.png'];
+  imgs.forEach(src => { const i = new Image(); i.src = src; });
+  let idx = 0;
+  const hImg = document.getElementById('heroImg');
+  if(!hImg) return;
+  setInterval(() => {
+    idx = 1 - idx;
+    hImg.style.opacity = '0';
+    setTimeout(() => {
+      hImg.src = imgs[idx];
+      hImg.style.opacity = '1';
+    }, 400);
+  }, 2000);
 })();
 
 /* =============== DATA =============== */
