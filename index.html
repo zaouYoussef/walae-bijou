@@ -58,6 +58,11 @@
     color:var(--gold);
   }
 
+  /* ===== TYPEWRITER CURSOR ===== */
+  .typewriter{overflow:hidden;white-space:nowrap;border-right:2px solid transparent;animation:typeBlink .8s step-end infinite;display:inline-block;}
+  @keyframes typeBlink{50%{border-color:var(--gold);}}
+  @media (min-width:981px){.typewriter{border-right-color:transparent!important;}}
+
   /* ===== 3D BACKGROUND RINGS ===== */
   #bg3d-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;}
 
@@ -72,6 +77,9 @@
 
   /* ===== AMBIENT FLOATING GOLD ===== */
   #ambient-canvas{position:fixed;inset:0;pointer-events:none;z-index:1;}
+
+  /* ===== CONSTELLATION ===== */
+  #constellation-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;}
 
   /* ===== NAV ===== */
   header{
@@ -153,8 +161,13 @@
   }
   .hero-bg img{
     width:100%;height:100%;object-fit:cover;
-    transform:scale(1.08);
+    transform:scale(1);
     transition:transform .1s linear;
+    animation:kenBurns 12s ease-in-out infinite alternate;
+  }
+  @keyframes kenBurns{
+    0%{transform:scale(1) translate(0,0);}
+    100%{transform:scale(1.12) translate(-1%,-1%);}
   }
   .hero-bg .overlay{
     position:absolute;inset:0;
@@ -167,7 +180,7 @@
     background:radial-gradient(ellipse 50% 50% at 50% 50%, rgba(201,161,92,.08), transparent 70%);
     animation:pulseGlow 5s ease-in-out infinite;
   }
-  @keyframes pulseGlow{0%,100%{opacity:.6;}50%{opacity:1;}}
+  @keyframes pulseGlow{0%,100%{opacity:.4;transform:scale(1);}50%{opacity:1;transform:scale(1.08);}}
   .hero-grid{
     display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;
     width:100%;max-width:1320px;margin:0 auto;position:relative;z-index:2;
@@ -181,9 +194,9 @@
     margin:18px 0 24px;
   }
   .hero h1 .line{display:block;overflow:hidden;}
-  .hero h1 .line span{display:block;animation:revealLine 1.2s cubic-bezier(.2,.7,.3,1) forwards;transform:translateY(100%);opacity:0;}
+  .hero h1 .line span{display:block;animation:revealLine 1.2s cubic-bezier(.2,.7,.3,1) forwards;transform:translateY(100%);opacity:0;filter:blur(6px);}
   .hero h1 .line:nth-child(2) span{animation-delay:.15s;}
-  @keyframes revealLine{to{transform:translateY(0);opacity:1;}}
+  @keyframes revealLine{to{transform:translateY(0);opacity:1;filter:blur(0);}}
   .hero h1 .gold-text{
     background:linear-gradient(100deg, var(--gold-deep) 0%, var(--gold-bright) 30%, var(--gold) 45%, var(--gold-bright) 60%, var(--gold-deep) 100%);
     background-size:250% 100%;
@@ -192,6 +205,8 @@
     text-shadow:0 2px 20px rgba(0,0,0,.85), 0 0 60px rgba(0,0,0,.5);
   }
   .hero h1 .line span{text-shadow:0 2px 16px rgba(0,0,0,.6);}
+
+
   @keyframes shimmer{
     0%{background-position:200% 0;}
     100%{background-position:-50% 0;}
@@ -705,21 +720,69 @@
   .reveal-scale{opacity:0;transform:scale(.92);transition:opacity .8s ease,transform .8s ease;}
   .reveal-scale.in{opacity:1;transform:scale(1);}
 
-  /* ===== MOBILE ===== */
+  /* ===== MOBILE BOTTOM NAV ===== */
+  .bottom-nav{display:none;}
   @media (max-width:980px){
-    .hero-grid{grid-template-columns:1fr;}
-    .hero-art{height:340px;order:-1;}
+    .bottom-nav{
+      display:flex;position:fixed;bottom:0;left:0;right:0;z-index:150;
+      background:rgba(10,9,6,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+      border-top:1px solid var(--hairline);
+      padding:6px 0 calc(6px + env(safe-area-inset-bottom,0));
+      justify-content:space-around;
+    }
+    .bottom-nav a,.bottom-nav button{
+      display:flex;flex-direction:column;align-items:center;gap:2px;
+      font-family:var(--mono);font-size:.55rem;letter-spacing:.06em;text-transform:uppercase;
+      color:var(--ivory-dim);transition:color .3s;padding:4px 8px;border:none;background:none;cursor:pointer;
+    }
+    .bottom-nav a:hover,.bottom-nav a.active,.bottom-nav button:hover{color:var(--gold-bright);}
+    .bottom-nav svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5;}
+    .bottom-nav .nav-label{font-size:.55rem;letter-spacing:.04em;}
+
+    body{padding-bottom:64px;}
+
+    /* ===== IMMERSIVE MOBILE HERO ===== */
+    .hero{min-height:100svh;padding:80px 16px 60px;}
+    .hero-grid{grid-template-columns:1fr;gap:0;}
+
+    .hero h1{font-size:clamp(2rem,9vw,3.2rem);margin:8px 0 14px;}
+    .hero p.lede{font-size:.92rem;max-width:100%;}
+    .hero-ctas{margin-top:20px;flex-direction:column;}
+    .hero-ctas .btn{width:100%;justify-content:center;padding:14px 24px;font-size:.82rem;}
+    .trust-line{margin-top:24px;gap:12px;font-size:.58rem;}
     nav.links{display:none;}
-    .cat-grid{grid-template-columns:repeat(3,1fr);}
-    .prod-grid{grid-template-columns:repeat(2,1fr);}
-    .trust-cols{grid-template-columns:repeat(2,1fr);}
-    .testimonials{grid-template-columns:1fr;}
-    .insta-grid{grid-template-columns:repeat(4,1fr);}
-    .foot-grid{grid-template-columns:1fr 1fr;}
     .wa-pill span{display:none;}
     .wa-pill{padding:10px;}
+
+    /* ===== SCROLL DOWN ARROW ===== */
+    .scroll-indicator{
+      position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
+      display:flex;flex-direction:column;align-items:center;gap:6px;z-index:5;
+      color:var(--gold);font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;
+      animation:scrollBounce 2s ease-in-out infinite;
+      text-shadow:0 0 12px rgba(201,161,92,.3);
+    }
+    .scroll-indicator svg{width:20px;height:20px;stroke:var(--gold);stroke-width:1.5;filter:drop-shadow(0 0 6px rgba(201,161,92,.4));animation:scrollPulse 2s ease-in-out infinite;}
+    @keyframes scrollBounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-8px);}}
+    @keyframes scrollPulse{0%,100%{opacity:.4;}50%{opacity:1;}}
+
+    .cat-grid{grid-template-columns:repeat(3,1fr);gap:10px;}
+    .cat-card{aspect-ratio:2/3;}
+    .cat-card .content{padding:20px 10px 16px;}
+    .cat-icon{width:40px;height:40px;margin:0 auto 10px;}
+    .cat-icon svg{width:20px;height:20px;}
+    .cat-card h3{font-size:1rem;}
+    .prod-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+    .filter-bar{overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start;padding:0 4px 8px;margin-bottom:20px;-webkit-overflow-scrolling:touch;}
+    .filter-btn{flex-shrink:0;padding:8px 16px;font-size:.64rem;}
+    .trust-cols{grid-template-columns:repeat(2,1fr);gap:20px;}
+    .testimonials{grid-template-columns:1fr;}
+    .insta-grid{grid-template-columns:repeat(4,1fr);gap:6px;}
+    .foot-grid{grid-template-columns:1fr 1fr;gap:30px;}
     .form-row{grid-template-columns:1fr;}
-    .form-modal{padding:32px 24px;}
+    .form-modal{padding:28px 18px;}
+    .section-head{margin-bottom:32px;}
+    section{padding:70px 16px;}
     .detail-modal{
       grid-template-columns:1fr;
       max-height:95vh;
@@ -728,22 +791,37 @@
       max-width:500px;
       margin:0 auto;
     }
-    .boutique-grid{grid-template-columns:1fr;}
-    .boutique-grid{grid-template-columns:1fr;}
+    .boutique-grid{grid-template-columns:1fr;gap:30px;}
     .detail-gallery{
-      min-height:280px;
-      height:280px;
+      min-height:260px;
+      height:260px;
     }
-    .detail-info{
-      padding:24px 20px;
+    .detail-info{padding:20px 18px;}
+    footer{padding:50px 16px 80px;}
+
+    /* ===== MOBILE CART BOTTOM SHEET ===== */
+    .drawer{
+      width:100%;max-width:100%;left:0;right:0;bottom:0;top:auto;height:70vh;
+      transform:translateY(100%);transition:transform .45s cubic-bezier(.2,.8,.2,1);
+      border-left:none;border-top:1px solid var(--border-glass);
+      border-radius:16px 16px 0 0;
     }
+    .drawer.open{transform:translateY(0);}
+    .drawer-head{padding:20px 20px 14px;}
+    .drawer-head:before{
+      content:'';display:block;width:36px;height:3px;border-radius:2px;
+      background:var(--hairline);margin:-4px auto 10px;
+    }
+    .drawer-items{padding:6px 20px;}
+    .drawer-foot{padding:16px 20px 24px;}
   }
   @media (max-width:560px){
+    .hero h1{font-size:clamp(1.7rem,10vw,2.4rem);}
     .cat-grid{grid-template-columns:repeat(2,1fr);}
-    .prod-grid{grid-template-columns:1fr;}
+    .prod-grid{grid-template-columns:1fr;gap:16px;}
     .trust-cols{grid-template-columns:1fr;}
-    .foot-grid{grid-template-columns:1fr;gap:36px;}
-    section{padding:80px 20px;}
+    .foot-grid{grid-template-columns:1fr;gap:30px;}
+    section{padding:60px 16px;}
   }
 </style>
 </head>
@@ -753,6 +831,7 @@
 <canvas id="bg3d-canvas"></canvas>
 <canvas id="ambient-canvas"></canvas>
 <canvas id="sparkle-canvas"></canvas>
+<canvas id="constellation-canvas"></canvas>
 
 <!-- ================= NAV ================= -->
 <header id="siteHeader">
@@ -781,6 +860,26 @@
   </div>
 </header>
 
+<!-- ================= MOBILE BOTTOM NAV ================= -->
+<div class="bottom-nav">
+  <a href="#" class="active" data-scroll="top">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+    <span class="nav-label">Accueil</span>
+  </a>
+  <a href="#collection" data-scroll="collection">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <span class="nav-label">Collection</span>
+  </a>
+  <a href="https://wa.me/212539341954" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M20 12a8 8 0 1 1-3.6-6.7M20 12l-2-1M4 20l1.3-3.8"/></svg>
+    <span class="nav-label">WhatsApp</span>
+  </a>
+  <button id="mobileCartBtn">
+    <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M4 6h2l1.6 10.2a2 2 0 0 0 2 1.8h7.8a2 2 0 0 0 2-1.6L21 8H7"/><circle cx="10" cy="21" r="1"/><circle cx="17" cy="21" r="1"/></svg>
+    <span class="nav-label">Panier</span>
+  </button>
+</div>
+
 <!-- ================= HERO ================= -->
 <section class="hero" id="hero">
   <div class="hero-bg">
@@ -790,7 +889,7 @@
   </div>
   <div class="hero-grid">
     <div>
-      <span class="eyebrow">Wala'e Jewelry · Diamant 💎</span>
+      <span class="eyebrow">Wala'e Jewelry · Or 18K & Diamant</span>
       <h1>
         <span class="line"><span>L'or qui</span></span>
         <span class="line"><span class="gold-text">vous ressemble.</span></span>
@@ -806,6 +905,10 @@
         <span>Paiement à la livraison</span>
         <span>Tanger, Maroc</span>
       </div>
+    </div>
+    <div class="scroll-indicator">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      <span>Défiler</span>
     </div>
 </section>
 
@@ -1304,18 +1407,103 @@ function animateSparkles(){
 }
 animateSparkles();
 
+/* =============== TYPEWRITER EYEBROW =============== */
+(function(){
+  const el = document.querySelector('.hero .eyebrow');
+  if(!el || window.innerWidth > 980) return;
+  const text = el.textContent;
+  el.textContent = '';
+  el.style.display = 'inline-block';
+  el.classList.add('typewriter');
+  el.style.visibility = 'visible';
+  let i = 0;
+  function type(){
+    if(i < text.length){
+      el.textContent += text.charAt(i);
+      i++;
+      setTimeout(type, 28 + Math.random() * 22);
+    } else {
+      el.style.borderRightColor = 'transparent';
+      setTimeout(()=> el.classList.remove('typewriter'), 2000);
+    }
+  }
+  setTimeout(type, 800);
+})();
+
+/* =============== CONSTELLATION PARTICLES =============== */
+const cCanvas=document.getElementById('constellation-canvas');
+const cCtx=cCanvas.getContext('2d');
+let cW,cH,cParticles=[];
+function resizeConstellation(){
+  cW=cCanvas.width=window.innerWidth; cH=cCanvas.height=window.innerHeight;
+}
+resizeConstellation();
+window.addEventListener('resize',resizeConstellation);
+for(let i=0;i<80;i++){
+  cParticles.push({
+    x:Math.random()*cW, y:Math.random()*cH,
+    vx:(Math.random()-0.5)*0.3, vy:(Math.random()-0.5)*0.3,
+    r:0.5+Math.random()*1.5, a:0.1+Math.random()*0.3
+  });
+}
+function animateConstellation(){
+  cCtx.clearRect(0,0,cW,cH);
+  cParticles.forEach(p=>{
+    p.x+=p.vx; p.y+=p.vy;
+    if(p.x<0) p.x=cW; if(p.x>cW) p.x=0;
+    if(p.y<0) p.y=cH; if(p.y>cH) p.y=0;
+    cCtx.beginPath();
+    cCtx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    cCtx.fillStyle=`rgba(201,161,92,${p.a})`;
+    cCtx.fill();
+  });
+  for(let i=0;i<cParticles.length;i++){
+    for(let j=i+1;j<cParticles.length;j++){
+      const dx=cParticles[i].x-cParticles[j].x, dy=cParticles[i].y-cParticles[j].y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<180){
+        const alpha=(1-dist/180)*0.12;
+        const mx=(cParticles[i].x+cParticles[j].x)/2;
+        const my=(cParticles[i].y+cParticles[j].y)/2;
+        const dxM=mouseX-mx, dyM=mouseY-my;
+        const distM=Math.sqrt(dxM*dxM+dyM*dyM);
+        const pull=Math.max(0,1-distM/300)*0.3;
+        cCtx.beginPath();
+        cCtx.moveTo(cParticles[i].x+dx*pull,cParticles[i].y+dy*pull);
+        cCtx.lineTo(cParticles[j].x-dx*pull,cParticles[j].y-dy*pull);
+        cCtx.strokeStyle=`rgba(201,161,92,${alpha})`;
+        cCtx.lineWidth=0.5;
+        cCtx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animateConstellation);
+}
+animateConstellation();
+
 /* =============== PARALLAX HERO + 3D TILT =============== */
 const heroImg = document.getElementById('heroImg');
-let heroMX = 0, heroMY = 0;
+let heroMX = 0, heroMY = 0, gamma = 0, beta = 0;
 document.addEventListener('mousemove', e=>{
   heroMX = (e.clientX/innerWidth - .5) * 2;
   heroMY = (e.clientY/innerHeight - .5) * 2;
 });
+document.addEventListener('touchmove', e=>{
+  const t = e.touches[0];
+  heroMX = (t.clientX/innerWidth - .5) * 2;
+  heroMY = (t.clientY/innerHeight - .5) * 2;
+}, {passive:true});
+document.addEventListener('touchend', ()=>{ heroMX = 0; heroMY = 0; });
+window.addEventListener('deviceorientation', e=>{
+  if(e.gamma !== null){ gamma = e.gamma / 45; beta = e.beta / 45; }
+}, true);
 (function heroTilt(){
   if(heroImg){
     const scrolled = window.scrollY;
     const scrollOffset = scrolled < innerHeight ? scrolled * .08 : innerHeight * .08;
-    heroImg.style.transform = `scale(1.06) translateY(${scrollOffset}px) translate(${heroMX*-6}px,${heroMY*-4}px)`;
+    const tiltX = gamma * -4 || heroMX * -6;
+    const tiltY = beta * 3 || heroMY * -4;
+    heroImg.style.transform = `scale(1.06) translateY(${scrollOffset}px) translate(${tiltX}px,${tiltY}px)`;
   }
   requestAnimationFrame(heroTilt);
 })();
@@ -1515,22 +1703,25 @@ const subtotalEl = document.getElementById('subtotal');
 const waCheckout = document.getElementById('waCheckout');
 
 function burstParticles(x,y){
-  const colors = ['#d4af37','#f0d68a','#ffdf73','#fff8dc'];
-  for(let i=0;i<18;i++){
+  const colors = ['#d4af37','#f0d68a','#ffdf73','#fff8dc','#c9a15c','#f3dc9a'];
+  for(let i=0;i<55;i++){
     const p = document.createElement('div');
-    const size = 4+Math.random()*8;
+    const size = 2+Math.random()*12;
     const angle = Math.random()*Math.PI*2;
-    const dist = 40+Math.random()*100;
+    const dist = 30+Math.random()*160;
     const dx = Math.cos(angle)*dist;
     const dy = Math.sin(angle)*dist;
     const rot = Math.random()*720;
-    p.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:${size}px;height:${size}px;border-radius:${Math.random()>.5?'50%':'2px'};background:${colors[Math.floor(Math.random()*colors.length)]};pointer-events:none;z-index:999;opacity:1;transition:all .8s cubic-bezier(.2,.8,.2,1);`;
+    const shapes = ['50%','2px','0%'];
+    const shape = Math.random()>.6 ? '50%' : (Math.random()>.5 ? '2px' : '0%');
+    const delay = Math.random()*0.1;
+    p.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:${size}px;height:${size}px;border-radius:${shape};background:${colors[Math.floor(Math.random()*colors.length)]};pointer-events:none;z-index:999;opacity:1;transition:all ${0.6+Math.random()*0.6}s cubic-bezier(.2,.8,.2,1) ${delay}s;box-shadow:0 0 ${6+Math.random()*12}px rgba(201,161,92,0.4);`;
     document.body.appendChild(p);
     requestAnimationFrame(()=>{
-      p.style.transform = `translate(${dx}px,${dy}px) rotate(${rot}deg) scale(.2)`;
+      p.style.transform = `translate(${dx}px,${dy}px) rotate(${rot}deg) scale(${0.1+Math.random()*0.3})`;
       p.style.opacity = '0';
     });
-    setTimeout(()=> p.remove(), 900);
+    setTimeout(()=> p.remove(), 1400);
   }
 }
 function addToCart(id){
@@ -1603,6 +1794,7 @@ const drawer = document.getElementById('drawer');
 function openDrawer(){ overlay.classList.add('open'); drawer.classList.add('open'); }
 function closeDrawer(){ overlay.classList.remove('open'); drawer.classList.remove('open'); }
 document.getElementById('cartBtn').addEventListener('click', openDrawer);
+document.getElementById('mobileCartBtn').addEventListener('click', openDrawer);
 document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
 overlay.addEventListener('click', closeDrawer);
 
@@ -1611,6 +1803,23 @@ const header = document.getElementById('siteHeader');
 window.addEventListener('scroll', ()=>{
   header.classList.toggle('scrolled', window.scrollY > 40);
 });
+
+/* =============== MOBILE BOTTOM NAV ACTIVE =============== */
+const navLinks = document.querySelectorAll('.bottom-nav a[data-scroll]');
+if(navLinks.length){
+  const sections = ['top','collection','categories','contact'];
+  window.addEventListener('scroll', ()=>{
+    const scrollY = window.scrollY + 100;
+    let active = 'top';
+    sections.forEach(id=>{
+      const el = id==='top' ? document.getElementById('hero') : document.getElementById(id);
+      if(el && el.offsetTop <= scrollY) active = id;
+    });
+    navLinks.forEach(a=>{
+      a.classList.toggle('active', a.dataset.scroll === active);
+    });
+  });
+}
 
 /* =============== REVEAL =============== */
 const io = new IntersectionObserver(entries=>{
@@ -1882,6 +2091,23 @@ document.addEventListener('keydown', e=>{
   if(e.key === 'ArrowRight') document.getElementById('detailNext').click();
 });
 
+/* =============== TOUCH RIPPLE =============== */
+document.addEventListener('touchstart', e=>{
+  const target = e.target.closest('button, a, .prod-card, .cat-card, .insta-tile');
+  if(!target) return;
+  const rect = target.getBoundingClientRect();
+  const ripple = document.createElement('span');
+  const size = Math.max(rect.width, rect.height);
+  const x = (e.touches[0].clientX - rect.left) - size/2;
+  const y = (e.touches[0].clientY - rect.top) - size/2;
+  ripple.style.cssText = `position:absolute;left:${x}px;top:${y}px;width:${size}px;height:${size}px;border-radius:50%;background:rgba(201,161,92,.25);pointer-events:none;transform:scale(0);transition:transform .5s ease,opacity .5s ease;z-index:9;`;
+  target.style.position = 'relative';
+  target.style.overflow = 'hidden';
+  target.appendChild(ripple);
+  requestAnimationFrame(()=>{ ripple.style.transform = 'scale(2)'; ripple.style.opacity = '0'; });
+  setTimeout(()=>ripple.remove(), 600);
+});
+
 /* =============== 3D SPOTLIGHT GLOW =============== */
 const spotlight = document.createElement('div');
 spotlight.style.cssText = 'position:fixed;pointer-events:none;z-index:1;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(201,161,92,.06),transparent 70%);transform:translate(-50%,-50%);transition:left .15s ease,top .15s ease;';
@@ -1890,285 +2116,6 @@ document.addEventListener('mousemove', e=>{
   spotlight.style.left = e.clientX + 'px';
   spotlight.style.top = e.clientY + 'px';
 });
-
-/* =============== 3D HERO INTERACTIVE GEMSTONE =============== */
-(function() {
-  if (typeof THREE === 'undefined') return;
-  const container = document.querySelector('.hero-art');
-  const canvas = document.getElementById('hero-3d-canvas');
-  if (!canvas || !container) return;
-
-  const scene = new THREE.Scene();
-
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.z = 6;
-
-  const renderer = new THREE.WebGLRenderer({
-    canvas: canvas,
-    alpha: true,
-    antialias: true
-  });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-  // Diamond Geometry (Brilliant Cut)
-  const gemGeometry = new THREE.BufferGeometry();
-  
-  const radiusTable = 0.5;
-  const radiusGirdle = 1.0;
-  const yTable = 0.5;
-  const yGirdle = 0.15;
-  const yCulet = -0.9;
-  
-  const vertices = [
-    0, yTable, 0
-  ];
-  
-  for (let i = 0; i < 8; i++) {
-    const angle = (i / 8) * Math.PI * 2;
-    vertices.push(Math.cos(angle) * radiusTable, yTable, Math.sin(angle) * radiusTable);
-  }
-  
-  for (let i = 0; i < 8; i++) {
-    const angle = (i / 8) * Math.PI * 2;
-    vertices.push(Math.cos(angle) * radiusGirdle, yGirdle, Math.sin(angle) * radiusGirdle);
-  }
-  
-  vertices.push(0, yCulet, 0);
-  
-  const verticesF32 = new Float32Array(vertices);
-  const indices = [];
-  
-  for (let i = 0; i < 8; i++) {
-    const next = (i + 1) % 8;
-    indices.push(0, i + 1, next + 1);
-  }
-  
-  for (let i = 0; i < 8; i++) {
-    const next = (i + 1) % 8;
-    const t1 = i + 1;
-    const t2 = next + 1;
-    const g1 = i + 9;
-    const g2 = next + 9;
-    
-    indices.push(t1, g1, g2);
-    indices.push(t1, g2, t2);
-  }
-  
-  for (let i = 0; i < 8; i++) {
-    const next = (i + 1) % 8;
-    const g1 = i + 9;
-    const g2 = next + 9;
-    indices.push(g1, 17, g2);
-  }
-  
-  gemGeometry.setAttribute('position', new THREE.BufferAttribute(verticesF32, 3));
-  gemGeometry.setIndex(indices);
-  gemGeometry.computeVertexNormals();
-
-  const gemMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xffffff,
-    roughness: 0.03,
-    metalness: 0.05,
-    transmission: 0.95,
-    ior: 2.417,
-    thickness: 1.8,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0.05,
-    side: THREE.DoubleSide,
-    flatShading: true
-  });
-  
-  const ringGeometry = new THREE.TorusGeometry(0.18, 0.03, 8, 24);
-  const goldMaterial = new THREE.MeshStandardMaterial({
-    color: 0xd4af37,
-    metalness: 0.9,
-    roughness: 0.15
-  });
-  
-  const gemMesh = new THREE.Mesh(gemGeometry, gemMaterial);
-  const hangerMesh = new THREE.Mesh(ringGeometry, goldMaterial);
-  hangerMesh.position.y = 0.65;
-  hangerMesh.rotation.x = Math.PI / 2;
-  
-  const pendantGroup = new THREE.Group();
-  pendantGroup.add(gemMesh);
-  pendantGroup.add(hangerMesh);
-  scene.add(pendantGroup);
-
-  const particleCount = 25;
-  const particleGeometry = new THREE.BufferGeometry();
-  const particlePositions = new Float32Array(particleCount * 3);
-  const particleSpeeds = [];
-  
-  for (let i = 0; i < particleCount; i++) {
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos((Math.random() * 2) - 1);
-    const r = 1.5 + Math.random() * 1.5;
-    
-    particlePositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-    particlePositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-    particlePositions[i * 3 + 2] = r * Math.cos(phi);
-    
-    particleSpeeds.push({
-      x: (Math.random() - 0.5) * 0.005,
-      y: (Math.random() - 0.5) * 0.005 + 0.002,
-      z: (Math.random() - 0.5) * 0.005,
-      rLimit: 3.0
-    });
-  }
-  
-  particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-  
-  const pMaterial = new THREE.PointsMaterial({
-    color: 0xf3dc9a,
-    size: 0.06,
-    transparent: true,
-    opacity: 0.8,
-    blending: THREE.AdditiveBlending
-  });
-  
-  const particleSystem = new THREE.Points(particleGeometry, pMaterial);
-  scene.add(particleSystem);
-
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-  scene.add(ambientLight);
-
-  const lightGold = new THREE.SpotLight(0xffdf7a, 12, 12, Math.PI/4, 0.5, 1);
-  lightGold.position.set(3, 4, 3);
-  scene.add(lightGold);
-
-  const lightWhite = new THREE.DirectionalLight(0xddeeff, 5);
-  lightWhite.position.set(-3, 2, 4);
-  scene.add(lightWhite);
-
-  const lightGarnet = new THREE.PointLight(0xa53344, 4, 8);
-  lightGarnet.position.set(0, -2, -2);
-  scene.add(lightGarnet);
-
-  let isDragging = false;
-  let previousMousePosition = { x: 0, y: 0 };
-  let rotationVelocity = { x: 0.005, y: 0.008 };
-  let mouseTiltX = 0, mouseTiltY = 0;
-
-  function resize() {
-    const width = container.clientWidth;
-    const height = container.clientHeight;
-    const size = Math.min(width, height, 500);
-    renderer.setSize(size, size);
-    camera.aspect = 1;
-    camera.updateProjectionMatrix();
-  }
-  
-  resize();
-  window.addEventListener('resize', resize);
-
-  container.addEventListener('mousemove', (e) => {
-    const rect = container.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    mouseTiltX = (y / (rect.height / 2)) * 0.25;
-    mouseTiltY = (x / (rect.width / 2)) * 0.25;
-  });
-
-  container.addEventListener('mouseleave', () => {
-    mouseTiltX = 0;
-    mouseTiltY = 0;
-  });
-
-  canvas.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    previousMousePosition = { x: e.clientX, y: e.clientY };
-  });
-
-  window.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    const deltaMove = {
-      x: e.clientX - previousMousePosition.x,
-      y: e.clientY - previousMousePosition.y
-    };
-    
-    pendantGroup.rotation.y += deltaMove.x * 0.008;
-    pendantGroup.rotation.x += deltaMove.y * 0.008;
-    rotationVelocity.y = deltaMove.x * 0.008;
-    rotationVelocity.x = deltaMove.y * 0.008;
-    previousMousePosition = { x: e.clientX, y: e.clientY };
-  });
-
-  window.addEventListener('mouseup', () => {
-    isDragging = false;
-  });
-
-  canvas.addEventListener('touchstart', (e) => {
-    isDragging = true;
-    const touch = e.touches[0];
-    previousMousePosition = { x: touch.clientX, y: touch.clientY };
-  }, { passive: true });
-
-  canvas.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    const touch = e.touches[0];
-    const deltaMove = {
-      x: touch.clientX - previousMousePosition.x,
-      y: touch.clientY - previousMousePosition.y
-    };
-    
-    pendantGroup.rotation.y += deltaMove.x * 0.008;
-    pendantGroup.rotation.x += deltaMove.y * 0.008;
-    rotationVelocity.y = deltaMove.x * 0.008;
-    rotationVelocity.x = deltaMove.y * 0.008;
-    previousMousePosition = { x: touch.clientX, y: touch.clientY };
-  }, { passive: true });
-
-  window.addEventListener('touchend', () => {
-    isDragging = false;
-  });
-
-  let time = 0;
-  function animate() {
-    requestAnimationFrame(animate);
-    time += 0.005;
-
-    if (!isDragging) {
-      pendantGroup.rotation.y += rotationVelocity.y;
-      pendantGroup.rotation.x += rotationVelocity.x;
-      rotationVelocity.y += (0.004 - rotationVelocity.y) * 0.03;
-      rotationVelocity.x += (0.002 - rotationVelocity.x) * 0.03;
-      pendantGroup.rotation.x += (mouseTiltX - (pendantGroup.rotation.x - Math.floor(pendantGroup.rotation.x / (Math.PI*2)) * (Math.PI*2))) * 0.05;
-      pendantGroup.rotation.y += mouseTiltY * 0.05;
-    }
-
-    pendantGroup.position.y = Math.sin(time * 2) * 0.15;
-    lightGold.position.x = 3 + Math.cos(time) * 1.5;
-    lightGold.position.z = 3 + Math.sin(time) * 1.5;
-
-    const posAttr = particleGeometry.attributes.position;
-    for (let i = 0; i < particleCount; i++) {
-      let px = posAttr.getX(i);
-      let py = posAttr.getY(i);
-      let pz = posAttr.getZ(i);
-      
-      const speed = particleSpeeds[i];
-      px += speed.x + Math.sin(time + i) * 0.002;
-      py += speed.y;
-      pz += speed.z;
-      
-      const dist = Math.sqrt(px*px + py*py + pz*pz);
-      if (dist > speed.rLimit || py > 2.0) {
-        const theta = Math.random() * Math.PI * 2;
-        px = Math.cos(theta) * (0.5 + Math.random() * 0.8);
-        py = -1.5;
-        pz = Math.sin(theta) * (0.5 + Math.random() * 0.8);
-      }
-      
-      posAttr.setXYZ(i, px, py, pz);
-    }
-    posAttr.needsUpdate = true;
-
-    renderer.render(scene, camera);
-  }
-
-  animate();
-})();
 
 </script>
 </body>
